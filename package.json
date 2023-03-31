@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@dlsl/dev-modules": "^2.3.2",
+    "@rarimo/evm-bridge": "^1.0.1",
     "@openzeppelin/contracts": "4.8.0",
     "@openzeppelin/contracts-upgradeable": "4.8.0",
     "dotenv": "^10.0.0",
