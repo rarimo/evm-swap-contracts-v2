@@ -2,6 +2,7 @@
 pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 import "@dlsl/dev-modules/diamond/presets/OwnableDiamond/OwnableDiamondStorage.sol";
@@ -41,5 +42,24 @@ contract BridgeRouter is OwnableDiamondStorage, MasterRouterStorage, BridgeRoute
 
         IERC20(token_).approveMax(bridge_);
         IBridge(bridge_).depositERC20(token_, amount_, bundle_, network_, receiver_, isWrapped_);
+    }
+
+    function bridgeERC721(
+        bool callerPayer_,
+        address token_,
+        uint256 tokenId_,
+        IBundler.Bundle calldata bundle_,
+        string calldata network_,
+        string calldata receiver_,
+        bool isWrapped_
+    ) external {
+        address bridge_ = getBridgeAddress();
+
+        if (callerPayer_) {
+            IERC721(token_).safeTransferFrom(getCallerAddress(), address(this), tokenId_);
+        }
+
+        IERC721(token_).approveMax(bridge_);
+        IBridge(bridge_).depositERC721(token_, tokenId_, bundle_, network_, receiver_, isWrapped_);
     }
 }

@@ -21,25 +21,29 @@ contract MasterRouter is DiamondStorage, MasterRouterStorage {
             uint256 command_ = payload_[i].command;
 
             if (command_ >= 1 && command_ <= 9) {
-                _makeBridge(payload_[i]);
+                require(
+                    _makeBridge(payload_[i]) || payload_[i].skipRevert,
+                    "MasterRouter: command reverted"
+                );
             }
         }
     }
 
-    function _makeBridge(Payload calldata payload_) internal {
+    function _makeBridge(Payload calldata payload_) internal returns (bool ok_) {
         uint256 command_ = payload_.command;
+        bytes4 funcSelector_;
+        address bridgeFacet_;
 
         if (command_ == Commands.BRIDGE_ERC20) {
-            bytes4 funcSelector_ = BridgeRouter.bridgeERC20.selector;
-            address bridgeFacet_ = getFacetBySelector(funcSelector_);
+            funcSelector_ = BridgeRouter.bridgeERC20.selector;
+            bridgeFacet_ = getFacetBySelector(funcSelector_);
+        } else if (command_ == Commands.BRIDGE_ERC721) {
+            funcSelector_ = BridgeRouter.bridgeERC721.selector;
+            bridgeFacet_ = getFacetBySelector(funcSelector_);
+        } else if (command_ == Commands.BRIDGE_ERC1155) {} else if (
+            command_ == Commands.BRIDGE_NATIVE
+        ) {}
 
-            (bool ok_, ) = bridgeFacet_.delegatecall(
-                abi.encodePacked(funcSelector_, payload_.data)
-            );
-
-            require(ok_ || payload_.skipRevert, "MasterRouter: command reverted");
-        } else if (command_ == Commands.BRIDGE_ERC721) {} else if (
-            command_ == Commands.BRIDGE_ERC1155
-        ) {} else if (command_ == Commands.BRIDGE_NATIVE) {}
+        (ok_, ) = bridgeFacet_.delegatecall(abi.encodePacked(funcSelector_, payload_.data));
     }
 }
