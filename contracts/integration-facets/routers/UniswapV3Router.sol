@@ -8,16 +8,17 @@ import "@dlsl/dev-modules/diamond/presets/OwnableDiamond/OwnableDiamondStorage.s
 import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
 import "@uniswap/v3-periphery/contracts/interfaces/IPeripheryPayments.sol";
 
-import "../../libs/Constants.sol";
-import "../../libs/Approver.sol";
 import "../../libs/BytesHelper.sol";
+import "../../libs/Approver.sol";
+import "../../libs/Payer.sol";
 import "../../master-facet/MasterRouterStorage.sol";
 import "../storages/UniswapV3RouterStorage.sol";
 
 contract UniswapV3Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV3RouterStorage {
+    using SafeERC20 for IERC20;
     using BytesHelper for bytes;
     using Approver for *;
-    using SafeERC20 for IERC20;
+    using Payer for *;
 
     function setUniswapV3RouterAddress(address swapV3Router_) external onlyOwner {
         getUniswapV3RouterStorage().swapV3Router = swapV3Router_;
@@ -88,32 +89,9 @@ contract UniswapV3Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV
         if (isNative_) {
             IPeripheryPayments(swapV3Router_).refundETH();
 
-            _payNativeChange(changeReceiver_, amountInMaximum_ - spentFundsAmount);
+            changeReceiver_.pay(amountInMaximum_ - spentFundsAmount);
         } else {
-            _payERC20Change(tokenIn_, changeReceiver_, amountInMaximum_ - spentFundsAmount);
+            IERC20(tokenIn_).pay(changeReceiver_, amountInMaximum_ - spentFundsAmount);
         }
-    }
-
-    function _payERC20Change(address token_, address changeReceiver_, uint256 amount_) internal {
-        if (changeReceiver_ == Constants.CALLER_ADDRESS) {
-            IERC20(token_).safeTransfer(getCallerAddress(), amount_);
-        } else if (changeReceiver_ != Constants.THIS_ADDRESS) {
-            IERC20(token_).safeTransfer(changeReceiver_, amount_);
-        }
-    }
-
-    function _payNativeChange(address changeReceiver_, uint256 amount_) internal {
-        if (changeReceiver_ == Constants.THIS_ADDRESS) {
-            return;
-        }
-
-        bool ok_;
-        if (changeReceiver_ == Constants.CALLER_ADDRESS) {
-            (ok_, ) = getCallerAddress().call{value: amount_}("");
-        } else {
-            (ok_, ) = changeReceiver_.call{value: amount_}("");
-        }
-
-        require(ok_, "UniswapV3Router: failed to refund native");
     }
 }

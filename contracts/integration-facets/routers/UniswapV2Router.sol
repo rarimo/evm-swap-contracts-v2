@@ -7,14 +7,15 @@ import "@dlsl/dev-modules/diamond/presets/OwnableDiamond/OwnableDiamondStorage.s
 
 import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router01.sol";
 
-import "../../libs/Constants.sol";
 import "../../libs/Approver.sol";
+import "../../libs/Payer.sol";
 import "../../master-facet/MasterRouterStorage.sol";
 import "../storages/UniswapV2RouterStorage.sol";
 
 contract UniswapV2Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV2RouterStorage {
-    using Approver for *;
     using SafeERC20 for IERC20;
+    using Approver for *;
+    using Payer for *;
 
     function setUniswapV2RouterAddress(address swapV2Router_) external onlyOwner {
         getUniswapV2RouterStorage().swapV2Router = swapV2Router_;
@@ -73,7 +74,7 @@ contract UniswapV2Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV
         )[0];
 
         if (amountInMax_ > spentFundsAmount_) {
-            _payERC20Change(tokenIn, changeReceiver_, amountInMax_ - spentFundsAmount_);
+            IERC20(tokenIn).pay(changeReceiver_, amountInMax_ - spentFundsAmount_);
         }
     }
 
@@ -117,7 +118,7 @@ contract UniswapV2Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV
         )[0];
 
         if (amountInMax_ > spentFundsAmount_) {
-            _payERC20Change(tokenIn, changeReceiver_, amountInMax_ - spentFundsAmount_);
+            IERC20(tokenIn).pay(changeReceiver_, amountInMax_ - spentFundsAmount_);
         }
     }
 
@@ -158,30 +159,7 @@ contract UniswapV2Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV
         }(amountOut_, path_, address(this), block.timestamp)[0];
 
         if (amountInMax_ > spentFundsAmount_) {
-            _payNativeChange(changeReceiver_, amountInMax_ - spentFundsAmount_);
+            changeReceiver_.pay(amountInMax_ - spentFundsAmount_);
         }
-    }
-
-    function _payERC20Change(address token_, address changeReceiver_, uint256 amount_) internal {
-        if (changeReceiver_ == Constants.CALLER_ADDRESS) {
-            IERC20(token_).safeTransfer(getCallerAddress(), amount_);
-        } else if (changeReceiver_ != Constants.THIS_ADDRESS) {
-            IERC20(token_).safeTransfer(changeReceiver_, amount_);
-        }
-    }
-
-    function _payNativeChange(address changeReceiver_, uint256 amount_) internal {
-        if (changeReceiver_ == Constants.THIS_ADDRESS) {
-            return;
-        }
-
-        bool ok_;
-        if (changeReceiver_ == Constants.CALLER_ADDRESS) {
-            (ok_, ) = getCallerAddress().call{value: amount_}("");
-        } else {
-            (ok_, ) = changeReceiver_.call{value: amount_}("");
-        }
-
-        require(ok_, "UniswapV2Router: failed to refund native");
     }
 }

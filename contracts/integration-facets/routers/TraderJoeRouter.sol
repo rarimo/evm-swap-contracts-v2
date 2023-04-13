@@ -7,14 +7,15 @@ import "@dlsl/dev-modules/diamond/presets/OwnableDiamond/OwnableDiamondStorage.s
 
 import "@traderjoe-xyz/core/contracts/traderjoe/interfaces/IJoeRouter01.sol";
 
-import "../../libs/Constants.sol";
 import "../../libs/Approver.sol";
+import "../../libs/Payer.sol";
 import "../../master-facet/MasterRouterStorage.sol";
 import "../storages/TraderJoeRouterStorage.sol";
 
 contract TraderJoeRouter is OwnableDiamondStorage, MasterRouterStorage, TraderJoeRouterStorage {
-    using Approver for *;
     using SafeERC20 for IERC20;
+    using Approver for *;
+    using Payer for *;
 
     function setTraderJoeRouterAddress(address traderJoeRouter_) external onlyOwner {
         getTraderJoeRouterStorage().traderJoeRouter = traderJoeRouter_;
@@ -73,7 +74,7 @@ contract TraderJoeRouter is OwnableDiamondStorage, MasterRouterStorage, TraderJo
         )[0];
 
         if (amountInMax_ > spentFundsAmount_) {
-            _payERC20Change(tokenIn, changeReceiver_, amountInMax_ - spentFundsAmount_);
+            IERC20(tokenIn).pay(changeReceiver_, amountInMax_ - spentFundsAmount_);
         }
     }
 
@@ -117,7 +118,7 @@ contract TraderJoeRouter is OwnableDiamondStorage, MasterRouterStorage, TraderJo
         )[0];
 
         if (amountInMax_ > spentFundsAmount_) {
-            _payERC20Change(tokenIn, changeReceiver_, amountInMax_ - spentFundsAmount_);
+            IERC20(tokenIn).pay(changeReceiver_, amountInMax_ - spentFundsAmount_);
         }
     }
 
@@ -158,30 +159,7 @@ contract TraderJoeRouter is OwnableDiamondStorage, MasterRouterStorage, TraderJo
         }(amountOut_, path_, address(this), block.timestamp)[0];
 
         if (amountInMax_ > spentFundsAmount_) {
-            _payNativeChange(changeReceiver_, amountInMax_ - spentFundsAmount_);
+            changeReceiver_.pay(amountInMax_ - spentFundsAmount_);
         }
-    }
-
-    function _payERC20Change(address token_, address changeReceiver_, uint256 amount_) internal {
-        if (changeReceiver_ == Constants.CALLER_ADDRESS) {
-            IERC20(token_).safeTransfer(getCallerAddress(), amount_);
-        } else if (changeReceiver_ != Constants.THIS_ADDRESS) {
-            IERC20(token_).safeTransfer(changeReceiver_, amount_);
-        }
-    }
-
-    function _payNativeChange(address changeReceiver_, uint256 amount_) internal {
-        if (changeReceiver_ == Constants.THIS_ADDRESS) {
-            return;
-        }
-
-        bool ok_;
-        if (changeReceiver_ == Constants.CALLER_ADDRESS) {
-            (ok_, ) = getCallerAddress().call{value: amount_}("");
-        } else {
-            (ok_, ) = changeReceiver_.call{value: amount_}("");
-        }
-
-        require(ok_, "TraderJoeRouter: failed to refund native");
     }
 }
