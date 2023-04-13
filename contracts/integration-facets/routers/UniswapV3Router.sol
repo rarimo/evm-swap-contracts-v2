@@ -74,7 +74,7 @@ contract UniswapV3Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV
             IERC20(tokenIn_).approveMax(swapV3Router_);
         }
 
-        uint256 spentFundsAmount = ISwapRouter(swapV3Router_).exactOutput{
+        uint256 spentFundsAmount_ = ISwapRouter(swapV3Router_).exactOutput{
             value: isNative_ ? amountInMaximum_ : 0
         }(
             ISwapRouter.ExactOutputParams({
@@ -89,9 +89,9 @@ contract UniswapV3Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV
         if (isNative_) {
             IPeripheryPayments(swapV3Router_).refundETH();
 
-            changeReceiver_.pay(amountInMaximum_ - spentFundsAmount);
+            changeReceiver_.pay(amountInMaximum_ - spentFundsAmount_);
         } else {
-            IERC20(tokenIn_).pay(changeReceiver_, amountInMaximum_ - spentFundsAmount);
+            IERC20(tokenIn_).pay(changeReceiver_, amountInMaximum_ - spentFundsAmount_);
         }
     }
 }
