@@ -29,15 +29,15 @@ contract UniswapV2Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV
     ) external {
         require(path_.length >= 2, "UniswapV2Router: invalid path");
 
-        address tokenIn = path_[0];
+        address tokenIn_ = path_[0];
 
         if (callerPayer_) {
-            IERC20(tokenIn).safeTransferFrom(getCallerAddress(), address(this), amountIn_);
+            IERC20(tokenIn_).safeTransferFrom(getCallerAddress(), address(this), amountIn_);
         }
 
         address swapV2router_ = getSwapV2Router();
 
-        IERC20(tokenIn).approveMax(swapV2router_);
+        IERC20(tokenIn_).approveMax(swapV2router_);
         IUniswapV2Router01(swapV2router_).swapExactTokensForTokens(
             amountIn_,
             amountOutMin_,
@@ -56,15 +56,15 @@ contract UniswapV2Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV
     ) external {
         require(path_.length >= 2, "UniswapV2Router: invalid path");
 
-        address tokenIn = path_[0];
+        address tokenIn_ = path_[0];
 
         if (callerPayer_) {
-            IERC20(tokenIn).safeTransferFrom(getCallerAddress(), address(this), amountInMax_);
+            IERC20(tokenIn_).safeTransferFrom(getCallerAddress(), address(this), amountInMax_);
         }
 
         address swapV2router_ = getSwapV2Router();
 
-        IERC20(tokenIn).approveMax(swapV2router_);
+        IERC20(tokenIn_).approveMax(swapV2router_);
         uint256 spentFundsAmount_ = IUniswapV2Router01(swapV2router_).swapTokensForExactTokens(
             amountOut_,
             amountInMax_,
@@ -74,7 +74,7 @@ contract UniswapV2Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV
         )[0];
 
         if (amountInMax_ > spentFundsAmount_) {
-            IERC20(tokenIn).pay(changeReceiver_, amountInMax_ - spentFundsAmount_);
+            IERC20(tokenIn_).pay(changeReceiver_, amountInMax_ - spentFundsAmount_);
         }
     }
 
@@ -100,15 +100,15 @@ contract UniswapV2Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV
     ) external {
         require(path_.length >= 2, "UniswapV2Router: invalid path");
 
-        address tokenIn = path_[0];
+        address tokenIn_ = path_[0];
 
         if (callerPayer_) {
-            IERC20(tokenIn).safeTransferFrom(getCallerAddress(), address(this), amountInMax_);
+            IERC20(tokenIn_).safeTransferFrom(getCallerAddress(), address(this), amountInMax_);
         }
 
         address swapV2router_ = getSwapV2Router();
 
-        IERC20(tokenIn).approveMax(swapV2router_);
+        IERC20(tokenIn_).approveMax(swapV2router_);
         uint256 spentFundsAmount_ = IUniswapV2Router01(swapV2router_).swapTokensForExactETH(
             amountOut_,
             amountInMax_,
@@ -118,7 +118,7 @@ contract UniswapV2Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV
         )[0];
 
         if (amountInMax_ > spentFundsAmount_) {
-            IERC20(tokenIn).pay(changeReceiver_, amountInMax_ - spentFundsAmount_);
+            IERC20(tokenIn_).pay(changeReceiver_, amountInMax_ - spentFundsAmount_);
         }
     }
 
@@ -130,15 +130,15 @@ contract UniswapV2Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV
     ) external {
         require(path_.length >= 2, "UniswapV2Router: invalid path");
 
-        address tokenIn = path_[0];
+        address tokenIn_ = path_[0];
 
         if (callerPayer_) {
-            IERC20(tokenIn).safeTransferFrom(getCallerAddress(), address(this), amountIn_);
+            IERC20(tokenIn_).safeTransferFrom(getCallerAddress(), address(this), amountIn_);
         }
 
         address swapV2router_ = getSwapV2Router();
 
-        IERC20(tokenIn).approveMax(swapV2router_);
+        IERC20(tokenIn_).approveMax(swapV2router_);
         IUniswapV2Router01(swapV2router_).swapExactTokensForETH(
             amountIn_,
             amountOutMin_,

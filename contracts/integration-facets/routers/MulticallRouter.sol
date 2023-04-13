@@ -8,9 +8,9 @@ contract MulticallRouter {
         uint256[] calldata values_
     ) external {
         for (uint256 i = 0; i < targets_.length; ++i) {
-            (bool ok, ) = targets_[i].call{value: values_[i]}(data_[i]);
+            (bool ok_, ) = targets_[i].call{value: values_[i]}(data_[i]);
 
-            require(ok, "MulticallRouter: failed to call");
+            require(ok_, "MulticallRouter: failed to call");
         }
     }
 }

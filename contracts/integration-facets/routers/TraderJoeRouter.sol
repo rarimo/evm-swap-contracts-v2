@@ -29,15 +29,15 @@ contract TraderJoeRouter is OwnableDiamondStorage, MasterRouterStorage, TraderJo
     ) external {
         require(path_.length >= 2, "TraderJoeRouter: invalid path");
 
-        address tokenIn = path_[0];
+        address tokenIn_ = path_[0];
 
         if (callerPayer_) {
-            IERC20(tokenIn).safeTransferFrom(getCallerAddress(), address(this), amountIn_);
+            IERC20(tokenIn_).safeTransferFrom(getCallerAddress(), address(this), amountIn_);
         }
 
         address traderJoeRouter_ = getTraderJoeRouter();
 
-        IERC20(tokenIn).approveMax(traderJoeRouter_);
+        IERC20(tokenIn_).approveMax(traderJoeRouter_);
         IJoeRouter01(traderJoeRouter_).swapExactTokensForTokens(
             amountIn_,
             amountOutMin_,
@@ -56,15 +56,15 @@ contract TraderJoeRouter is OwnableDiamondStorage, MasterRouterStorage, TraderJo
     ) external {
         require(path_.length >= 2, "TraderJoeRouter: invalid path");
 
-        address tokenIn = path_[0];
+        address tokenIn_ = path_[0];
 
         if (callerPayer_) {
-            IERC20(tokenIn).safeTransferFrom(getCallerAddress(), address(this), amountInMax_);
+            IERC20(tokenIn_).safeTransferFrom(getCallerAddress(), address(this), amountInMax_);
         }
 
         address traderJoeRouter_ = getTraderJoeRouter();
 
-        IERC20(tokenIn).approveMax(traderJoeRouter_);
+        IERC20(tokenIn_).approveMax(traderJoeRouter_);
         uint256 spentFundsAmount_ = IJoeRouter01(traderJoeRouter_).swapTokensForExactTokens(
             amountOut_,
             amountInMax_,
@@ -100,15 +100,15 @@ contract TraderJoeRouter is OwnableDiamondStorage, MasterRouterStorage, TraderJo
     ) external {
         require(path_.length >= 2, "TraderJoeRouter: invalid path");
 
-        address tokenIn = path_[0];
+        address tokenIn_ = path_[0];
 
         if (callerPayer_) {
-            IERC20(tokenIn).safeTransferFrom(getCallerAddress(), address(this), amountInMax_);
+            IERC20(tokenIn_).safeTransferFrom(getCallerAddress(), address(this), amountInMax_);
         }
 
         address traderJoeRouter_ = getTraderJoeRouter();
 
-        IERC20(tokenIn).approveMax(traderJoeRouter_);
+        IERC20(tokenIn_).approveMax(traderJoeRouter_);
         uint256 spentFundsAmount_ = IJoeRouter01(traderJoeRouter_).swapTokensForExactAVAX(
             amountOut_,
             amountInMax_,
@@ -130,15 +130,15 @@ contract TraderJoeRouter is OwnableDiamondStorage, MasterRouterStorage, TraderJo
     ) external {
         require(path_.length >= 2, "TraderJoeRouter: invalid path");
 
-        address tokenIn = path_[0];
+        address tokenIn_ = path_[0];
 
         if (callerPayer_) {
-            IERC20(tokenIn).safeTransferFrom(getCallerAddress(), address(this), amountIn_);
+            IERC20(tokenIn_).safeTransferFrom(getCallerAddress(), address(this), amountIn_);
         }
 
         address traderJoeRouter_ = getTraderJoeRouter();
 
-        IERC20(tokenIn).approveMax(traderJoeRouter_);
+        IERC20(tokenIn_).approveMax(traderJoeRouter_);
         IJoeRouter01(traderJoeRouter_).swapExactTokensForAVAX(
             amountIn_,
             amountOutMin_,
