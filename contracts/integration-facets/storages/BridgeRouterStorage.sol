@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.9;
 
 contract BridgeRouterStorage {
     bytes32 public constant BRIDGE_ROUTER_STORAGE_SLOT =
