@@ -60,23 +60,24 @@ library Payer {
     function pay(
         IERC1155 erc1155_,
         address to_,
-        uint256[] calldata ids_,
+        uint256[] calldata tokenIds_,
         uint256[] calldata amounts_
     ) external {
-        require(ids_.length == amounts_.length, "Payer: lengths mismatch");
+        require(tokenIds_.length == amounts_.length, "Payer: lengths mismatch");
 
-        for (uint256 i = 0; i < ids_.length; ++i) {
+        for (uint256 i = 0; i < tokenIds_.length; ++i) {
             uint256 amount_ = amounts_[i];
+            uint256 id_ = tokenIds_[i];
 
             if (amount_ == Constants.CONTRACT_BALANCE) {
-                amount_ = erc1155_.balanceOf(address(this), ids_[i]);
+                amount_ = erc1155_.balanceOf(address(this), id_);
             }
 
             if (to_ == Constants.CALLER_ADDRESS) {
                 to_ = _getCallerAddress();
             }
 
-            erc1155_.safeTransferFrom(address(this), to_, ids_[i], amount_, "");
+            erc1155_.safeTransferFrom(address(this), to_, id_, amount_, "");
         }
     }
 

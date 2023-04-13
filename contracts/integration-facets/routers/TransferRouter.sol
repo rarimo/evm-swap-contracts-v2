@@ -21,10 +21,10 @@ contract TransferRouter {
     function transferERC1155(
         address token_,
         address to_,
-        uint256[] calldata ids_,
+        uint256[] calldata tokenIds_,
         uint256[] calldata amounts_
     ) external {
-        IERC1155(token_).pay(to_, ids_, amounts_);
+        IERC1155(token_).pay(to_, tokenIds_, amounts_);
     }
 
     function transferNative(address to_, uint256 amount_) external {

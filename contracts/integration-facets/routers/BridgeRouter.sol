@@ -8,6 +8,7 @@ import "@dlsl/dev-modules/diamond/presets/OwnableDiamond/OwnableDiamondStorage.s
 import "@rarimo/evm-bridge/interfaces/bridge/IBridge.sol";
 import "@rarimo/evm-bridge/interfaces/bundle/IBundler.sol";
 
+import "../../libs/Constants.sol";
 import "../../libs/Approver.sol";
 import "../../master-facet/MasterRouterStorage.sol";
 import "../storages/BridgeRouterStorage.sol";
@@ -31,7 +32,9 @@ contract BridgeRouter is OwnableDiamondStorage, MasterRouterStorage, BridgeRoute
     ) external {
         address bridge_ = getBridgeAddress();
 
-        if (callerPayer_) {
+        if (amount_ == Constants.CONTRACT_BALANCE) {
+            amount_ = IERC20(token_).balanceOf(address(this));
+        } else if (callerPayer_) {
             IERC20(token_).safeTransferFrom(getCallerAddress(), address(this), amount_);
         }
 
@@ -70,7 +73,9 @@ contract BridgeRouter is OwnableDiamondStorage, MasterRouterStorage, BridgeRoute
     ) external {
         address bridge_ = getBridgeAddress();
 
-        if (callerPayer_) {
+        if (amount_ == Constants.CONTRACT_BALANCE) {
+            amount_ = IERC1155(token_).balanceOf(address(this), tokenId_);
+        } else if (callerPayer_) {
             IERC1155(token_).safeTransferFrom(
                 getCallerAddress(),
                 address(this),
@@ -98,6 +103,10 @@ contract BridgeRouter is OwnableDiamondStorage, MasterRouterStorage, BridgeRoute
         string calldata network_,
         string calldata receiver_
     ) external {
+        if (amount_ == Constants.CONTRACT_BALANCE) {
+            amount_ = address(this).balance;
+        }
+
         IBridge(getBridgeAddress()).depositNative{value: amount_}(bundle_, network_, receiver_);
     }
 }
