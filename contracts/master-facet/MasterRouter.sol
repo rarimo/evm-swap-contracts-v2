@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
+import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
+import "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol";
+
 import "@dlsl/dev-modules/diamond/DiamondStorage.sol";
 
 import "../libs/Commands.sol";
@@ -13,13 +16,15 @@ import "../integration-facets/routers/UniswapV2Router.sol";
 import "../integration-facets/routers/UniswapV3Router.sol";
 import "../integration-facets/routers/TraderJoeRouter.sol";
 
-contract MasterRouter is DiamondStorage, MasterRouterStorage {
+contract MasterRouter is DiamondStorage, MasterRouterStorage, ERC721Holder, ERC1155Holder {
     struct Payload {
         uint256 command;
         bool skipRevert;
         bool callerPayer;
         bytes data;
     }
+
+    receive() external payable {}
 
     function make(Payload[] calldata payloads_) external payable onlyCaller {
         for (uint256 i = 0; i < payloads_.length; ++i) {

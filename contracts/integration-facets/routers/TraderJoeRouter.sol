@@ -74,7 +74,7 @@ contract TraderJoeRouter is OwnableDiamondStorage, MasterRouterStorage, TraderJo
         )[0];
 
         if (amountInMax_ > spentFundsAmount_) {
-            IERC20(tokenIn).pay(changeReceiver_, amountInMax_ - spentFundsAmount_);
+            IERC20(tokenIn_).pay(changeReceiver_, amountInMax_ - spentFundsAmount_);
         }
     }
 
@@ -118,7 +118,7 @@ contract TraderJoeRouter is OwnableDiamondStorage, MasterRouterStorage, TraderJo
         )[0];
 
         if (amountInMax_ > spentFundsAmount_) {
-            IERC20(tokenIn).pay(changeReceiver_, amountInMax_ - spentFundsAmount_);
+            IERC20(tokenIn_).pay(changeReceiver_, amountInMax_ - spentFundsAmount_);
         }
     }
 
