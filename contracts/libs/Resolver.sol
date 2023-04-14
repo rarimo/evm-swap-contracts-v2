@@ -10,7 +10,7 @@ import "../master-facet/MasterRouterStorage.sol";
 library Resolver {
     function resolve(address address_) internal view returns (address) {
         if (address_ == Constants.THIS_ADDRESS) {
-            address(this);
+            return address(this);
         }
 
         if (address_ == Constants.CALLER_ADDRESS) {
