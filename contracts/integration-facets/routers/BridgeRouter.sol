@@ -8,13 +8,15 @@ import "@dlsl/dev-modules/diamond/presets/OwnableDiamond/OwnableDiamondStorage.s
 import "@rarimo/evm-bridge/interfaces/bridge/IBridge.sol";
 import "@rarimo/evm-bridge/interfaces/bundle/IBundler.sol";
 
-import "../../libs/Constants.sol";
 import "../../libs/Approver.sol";
+import "../../libs/Constants.sol";
+import "../../libs/Resolver.sol";
 import "../../master-facet/MasterRouterStorage.sol";
 import "../storages/BridgeRouterStorage.sol";
 
 contract BridgeRouter is OwnableDiamondStorage, MasterRouterStorage, BridgeRouterStorage {
     using Approver for *;
+    using Resolver for *;
     using SafeERC20 for IERC20;
 
     function setBridgeAddress(address bridge_) external onlyOwner {
@@ -34,8 +36,8 @@ contract BridgeRouter is OwnableDiamondStorage, MasterRouterStorage, BridgeRoute
 
         if (callerPayer_) {
             IERC20(token_).safeTransferFrom(getCallerAddress(), address(this), amount_);
-        } else if (amount_ == Constants.CONTRACT_BALANCE) {
-            amount_ = IERC20(token_).balanceOf(address(this));
+        } else {
+            amount_ = amount_.resolve(IERC20(token_));
         }
 
         IERC20(token_).approveMax(bridge_);
@@ -81,8 +83,8 @@ contract BridgeRouter is OwnableDiamondStorage, MasterRouterStorage, BridgeRoute
                 amount_,
                 ""
             );
-        } else if (amount_ == Constants.CONTRACT_BALANCE) {
-            amount_ = IERC1155(token_).balanceOf(address(this), tokenId_);
+        } else {
+            amount_ = amount_.resolve(IERC1155(token_), tokenId_);
         }
 
         IERC1155(token_).approveMax(bridge_);
@@ -103,10 +105,10 @@ contract BridgeRouter is OwnableDiamondStorage, MasterRouterStorage, BridgeRoute
         string calldata network_,
         string calldata receiver_
     ) external {
-        if (amount_ == Constants.CONTRACT_BALANCE) {
-            amount_ = address(this).balance;
-        }
-
-        IBridge(getBridgeAddress()).depositNative{value: amount_}(bundle_, network_, receiver_);
+        IBridge(getBridgeAddress()).depositNative{value: amount_.resolve()}(
+            bundle_,
+            network_,
+            receiver_
+        );
     }
 }

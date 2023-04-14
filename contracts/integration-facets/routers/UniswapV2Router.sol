@@ -16,6 +16,7 @@ contract UniswapV2Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV
     using SafeERC20 for IERC20;
     using Approver for *;
     using Payer for *;
+    using Resolver for address;
 
     function setUniswapV2RouterAddress(address swapV2Router_) external onlyOwner {
         getUniswapV2RouterStorage().swapV2Router = swapV2Router_;
@@ -23,6 +24,7 @@ contract UniswapV2Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV
 
     function swapExactTokensForTokens(
         bool callerPayer_,
+        address receiver_,
         uint256 amountIn_,
         uint256 amountOutMin_,
         address[] calldata path_
@@ -42,14 +44,14 @@ contract UniswapV2Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV
             amountIn_,
             amountOutMin_,
             path_,
-            address(this),
+            receiver_.resolve(),
             block.timestamp
         );
     }
 
     function swapTokensForExactTokens(
         bool callerPayer_,
-        address changeReceiver_,
+        address receiver_,
         uint256 amountOut_,
         uint256 amountInMax_,
         address[] calldata path_
@@ -69,16 +71,17 @@ contract UniswapV2Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV
             amountOut_,
             amountInMax_,
             path_,
-            address(this),
+            receiver_.resolve(),
             block.timestamp
         )[0];
 
         if (amountInMax_ > spentFundsAmount_) {
-            IERC20(tokenIn_).pay(changeReceiver_, amountInMax_ - spentFundsAmount_);
+            IERC20(tokenIn_).pay(receiver_, amountInMax_ - spentFundsAmount_);
         }
     }
 
     function swapExactETHForTokens(
+        address receiver_,
         uint256 amountIn_,
         uint256 amountOutMin_,
         address[] calldata path_
@@ -86,13 +89,14 @@ contract UniswapV2Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV
         IUniswapV2Router01(getSwapV2Router()).swapExactETHForTokens{value: amountIn_}(
             amountOutMin_,
             path_,
-            address(this),
+            receiver_.resolve(),
             block.timestamp
         );
     }
 
     function swapTokensForExactETH(
         bool callerPayer_,
+        address receiver_,
         address changeReceiver_,
         uint256 amountOut_,
         uint256 amountInMax_,
@@ -113,7 +117,7 @@ contract UniswapV2Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV
             amountOut_,
             amountInMax_,
             path_,
-            address(this),
+            receiver_.resolve(),
             block.timestamp
         )[0];
 
@@ -124,6 +128,7 @@ contract UniswapV2Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV
 
     function swapExactTokensForETH(
         bool callerPayer_,
+        address receiver_,
         uint256 amountIn_,
         uint256 amountOutMin_,
         address[] calldata path_
@@ -143,23 +148,23 @@ contract UniswapV2Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV
             amountIn_,
             amountOutMin_,
             path_,
-            address(this),
+            receiver_.resolve(),
             block.timestamp
         );
     }
 
     function swapETHForExactTokens(
-        address changeReceiver_,
+        address receiver_,
         uint256 amountOut_,
         uint256 amountInMax_,
         address[] calldata path_
     ) external {
         uint256 spentFundsAmount_ = IUniswapV2Router01(getSwapV2Router()).swapETHForExactTokens{
             value: amountInMax_
-        }(amountOut_, path_, address(this), block.timestamp)[0];
+        }(amountOut_, path_, receiver_.resolve(), block.timestamp)[0];
 
         if (amountInMax_ > spentFundsAmount_) {
-            changeReceiver_.pay(amountInMax_ - spentFundsAmount_);
+            receiver_.pay(amountInMax_ - spentFundsAmount_);
         }
     }
 }

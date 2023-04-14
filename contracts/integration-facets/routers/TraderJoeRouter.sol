@@ -16,6 +16,7 @@ contract TraderJoeRouter is OwnableDiamondStorage, MasterRouterStorage, TraderJo
     using SafeERC20 for IERC20;
     using Approver for *;
     using Payer for *;
+    using Resolver for address;
 
     function setTraderJoeRouterAddress(address traderJoeRouter_) external onlyOwner {
         getTraderJoeRouterStorage().traderJoeRouter = traderJoeRouter_;
@@ -23,6 +24,7 @@ contract TraderJoeRouter is OwnableDiamondStorage, MasterRouterStorage, TraderJo
 
     function swapExactTokensForTokens(
         bool callerPayer_,
+        address receiver_,
         uint256 amountIn_,
         uint256 amountOutMin_,
         address[] calldata path_
@@ -42,14 +44,14 @@ contract TraderJoeRouter is OwnableDiamondStorage, MasterRouterStorage, TraderJo
             amountIn_,
             amountOutMin_,
             path_,
-            address(this),
+            receiver_.resolve(),
             block.timestamp
         );
     }
 
     function swapTokensForExactTokens(
         bool callerPayer_,
-        address changeReceiver_,
+        address receiver_,
         uint256 amountOut_,
         uint256 amountInMax_,
         address[] calldata path_
@@ -69,16 +71,17 @@ contract TraderJoeRouter is OwnableDiamondStorage, MasterRouterStorage, TraderJo
             amountOut_,
             amountInMax_,
             path_,
-            address(this),
+            receiver_.resolve(),
             block.timestamp
         )[0];
 
         if (amountInMax_ > spentFundsAmount_) {
-            IERC20(tokenIn_).pay(changeReceiver_, amountInMax_ - spentFundsAmount_);
+            IERC20(tokenIn_).pay(receiver_, amountInMax_ - spentFundsAmount_);
         }
     }
 
     function swapExactAVAXForTokens(
+        address receiver_,
         uint256 amountIn_,
         uint256 amountOutMin_,
         address[] calldata path_
@@ -86,14 +89,14 @@ contract TraderJoeRouter is OwnableDiamondStorage, MasterRouterStorage, TraderJo
         IJoeRouter01(getTraderJoeRouter()).swapExactAVAXForTokens{value: amountIn_}(
             amountOutMin_,
             path_,
-            address(this),
+            receiver_.resolve(),
             block.timestamp
         );
     }
 
     function swapTokensForExactAVAX(
         bool callerPayer_,
-        address changeReceiver_,
+        address receiver_,
         uint256 amountOut_,
         uint256 amountInMax_,
         address[] calldata path_
@@ -113,17 +116,18 @@ contract TraderJoeRouter is OwnableDiamondStorage, MasterRouterStorage, TraderJo
             amountOut_,
             amountInMax_,
             path_,
-            address(this),
+            receiver_.resolve(),
             block.timestamp
         )[0];
 
         if (amountInMax_ > spentFundsAmount_) {
-            IERC20(tokenIn_).pay(changeReceiver_, amountInMax_ - spentFundsAmount_);
+            IERC20(tokenIn_).pay(receiver_, amountInMax_ - spentFundsAmount_);
         }
     }
 
     function swapExactTokensForAVAX(
         bool callerPayer_,
+        address receiver_,
         uint256 amountIn_,
         uint256 amountOutMin_,
         address[] calldata path_
@@ -143,23 +147,23 @@ contract TraderJoeRouter is OwnableDiamondStorage, MasterRouterStorage, TraderJo
             amountIn_,
             amountOutMin_,
             path_,
-            address(this),
+            receiver_.resolve(),
             block.timestamp
         );
     }
 
     function swapAVAXForExactTokens(
-        address changeReceiver_,
+        address receiver_,
         uint256 amountOut_,
         uint256 amountInMax_,
         address[] calldata path_
     ) external {
         uint256 spentFundsAmount_ = IJoeRouter01(getTraderJoeRouter()).swapAVAXForExactTokens{
             value: amountInMax_
-        }(amountOut_, path_, address(this), block.timestamp)[0];
+        }(amountOut_, path_, receiver_.resolve(), block.timestamp)[0];
 
         if (amountInMax_ > spentFundsAmount_) {
-            changeReceiver_.pay(amountInMax_ - spentFundsAmount_);
+            receiver_.pay(amountInMax_ - spentFundsAmount_);
         }
     }
 }

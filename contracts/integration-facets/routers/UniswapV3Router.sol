@@ -19,6 +19,7 @@ contract UniswapV3Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV
     using BytesHelper for bytes;
     using Approver for *;
     using Payer for *;
+    using Resolver for address;
 
     function setUniswapV3RouterAddress(address swapV3Router_) external onlyOwner {
         getUniswapV3RouterStorage().swapV3Router = swapV3Router_;
@@ -27,6 +28,7 @@ contract UniswapV3Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV
     function exactInput(
         bool callerPayer_,
         bool isNative_,
+        address receiver_,
         uint256 amountIn_,
         uint256 amountOutMinimum_,
         bytes calldata path_
@@ -46,7 +48,7 @@ contract UniswapV3Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV
         ISwapRouter(swapV3Router_).exactInput{value: isNative_ ? amountIn_ : 0}(
             ISwapRouter.ExactInputParams({
                 path: path_,
-                recipient: address(this),
+                recipient: receiver_.resolve(),
                 deadline: block.timestamp,
                 amountIn: amountIn_,
                 amountOutMinimum: amountOutMinimum_
@@ -57,7 +59,7 @@ contract UniswapV3Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV
     function exactOutput(
         bool callerPayer_,
         bool isNative_,
-        address changeReceiver_,
+        address receiver_,
         uint256 amountOut_,
         uint256 amountInMaximum_,
         bytes calldata path_
@@ -79,7 +81,7 @@ contract UniswapV3Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV
         }(
             ISwapRouter.ExactOutputParams({
                 path: path_,
-                recipient: address(this),
+                recipient: receiver_.resolve(),
                 deadline: block.timestamp,
                 amountOut: amountOut_,
                 amountInMaximum: amountInMaximum_
@@ -89,9 +91,9 @@ contract UniswapV3Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV
         if (isNative_) {
             IPeripheryPayments(swapV3Router_).refundETH();
 
-            changeReceiver_.pay(amountInMaximum_ - spentFundsAmount_);
+            receiver_.pay(amountInMaximum_ - spentFundsAmount_);
         } else {
-            IERC20(tokenIn_).pay(changeReceiver_, amountInMaximum_ - spentFundsAmount_);
+            IERC20(tokenIn_).pay(receiver_, amountInMaximum_ - spentFundsAmount_);
         }
     }
 }
