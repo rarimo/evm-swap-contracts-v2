@@ -62,7 +62,7 @@ library Payer {
         address to_,
         uint256[] calldata tokenIds_,
         uint256[] calldata amounts_
-    ) external {
+    ) internal ifNotTransferToThis(to_) {
         require(tokenIds_.length == amounts_.length, "Payer: lengths mismatch");
 
         for (uint256 i = 0; i < tokenIds_.length; ++i) {
