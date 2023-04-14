@@ -16,7 +16,7 @@ import "../storages/BridgeRouterStorage.sol";
 
 contract BridgeRouter is OwnableDiamondStorage, MasterRouterStorage, BridgeRouterStorage {
     using Approver for *;
-    using Resolver for *;
+    using Resolver for uint256;
     using SafeERC20 for IERC20;
 
     function setBridgeAddress(address bridge_) external onlyOwner {
