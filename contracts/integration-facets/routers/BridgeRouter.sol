@@ -32,10 +32,10 @@ contract BridgeRouter is OwnableDiamondStorage, MasterRouterStorage, BridgeRoute
     ) external {
         address bridge_ = getBridgeAddress();
 
-        if (amount_ == Constants.CONTRACT_BALANCE) {
-            amount_ = IERC20(token_).balanceOf(address(this));
-        } else if (callerPayer_) {
+        if (callerPayer_) {
             IERC20(token_).safeTransferFrom(getCallerAddress(), address(this), amount_);
+        } else if (amount_ == Constants.CONTRACT_BALANCE) {
+            amount_ = IERC20(token_).balanceOf(address(this));
         }
 
         IERC20(token_).approveMax(bridge_);
@@ -73,9 +73,7 @@ contract BridgeRouter is OwnableDiamondStorage, MasterRouterStorage, BridgeRoute
     ) external {
         address bridge_ = getBridgeAddress();
 
-        if (amount_ == Constants.CONTRACT_BALANCE) {
-            amount_ = IERC1155(token_).balanceOf(address(this), tokenId_);
-        } else if (callerPayer_) {
+        if (callerPayer_) {
             IERC1155(token_).safeTransferFrom(
                 getCallerAddress(),
                 address(this),
@@ -83,6 +81,8 @@ contract BridgeRouter is OwnableDiamondStorage, MasterRouterStorage, BridgeRoute
                 amount_,
                 ""
             );
+        } else if (amount_ == Constants.CONTRACT_BALANCE) {
+            amount_ = IERC1155(token_).balanceOf(address(this), tokenId_);
         }
 
         IERC1155(token_).approveMax(bridge_);
