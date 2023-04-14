@@ -19,7 +19,7 @@ library BytesHelper {
         uint256 start_
     ) private pure returns (address tokenAddress_) {
         assembly {
-            tokenAddress_ := div(mload(add(add(path_, 0x20), start_)), 0x1000000000000000000000000)
+            tokenAddress_ := shr(96, mload(add(add(path_, 0x20), start_)))
         }
     }
 }
