@@ -33,7 +33,7 @@ library Commands {
     uint256 internal constant EXACT_INPUT = 60;
     uint256 internal constant EXACT_OUTPUT = 61;
 
-    /// @dev UniswapV2 facet commands: 70 <= command <= 79
+    /// @dev TraderJoe facet commands: 70 <= command <= 79
     uint256 internal constant TJ_SWAP_EXACT_TOKENS_FOR_TOKENS = 70;
     uint256 internal constant TJ_SWAP_TOKENS_FOR_EXACT_TOKENS = 71;
     uint256 internal constant TJ_SWAP_EXACT_AVAX_FOR_TOKENS = 72;
