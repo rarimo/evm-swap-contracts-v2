@@ -8,14 +8,19 @@ import "@dlsl/dev-modules/diamond/presets/OwnableDiamond/OwnableDiamondStorage.s
 import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router01.sol";
 
 import "../../libs/Approver.sol";
-import "../../libs/Payer.sol";
+import "../../libs/Resolver.sol";
 import "../../master-facet/MasterRouterStorage.sol";
 import "../storages/UniswapV2RouterStorage.sol";
+import "./TransferRouter.sol";
 
-contract UniswapV2Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV2RouterStorage {
+contract UniswapV2Router is
+    OwnableDiamondStorage,
+    MasterRouterStorage,
+    UniswapV2RouterStorage,
+    TransferRouter
+{
     using SafeERC20 for IERC20;
     using Approver for *;
-    using Payer for *;
     using Resolver for address;
 
     function setUniswapV2RouterAddress(address swapV2Router_) external onlyOwner {
@@ -76,7 +81,7 @@ contract UniswapV2Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV
         )[0];
 
         if (amountInMax_ > spentFundsAmount_) {
-            IERC20(tokenIn_).pay(receiver_, amountInMax_ - spentFundsAmount_);
+            transferERC20(tokenIn_, receiver_, amountInMax_ - spentFundsAmount_);
         }
     }
 
@@ -97,7 +102,6 @@ contract UniswapV2Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV
     function swapTokensForExactETH(
         bool callerPayer_,
         address receiver_,
-        address changeReceiver_,
         uint256 amountOut_,
         uint256 amountInMax_,
         address[] calldata path_
@@ -122,7 +126,7 @@ contract UniswapV2Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV
         )[0];
 
         if (amountInMax_ > spentFundsAmount_) {
-            IERC20(tokenIn_).pay(changeReceiver_, amountInMax_ - spentFundsAmount_);
+            transferERC20(tokenIn_, receiver_, amountInMax_ - spentFundsAmount_);
         }
     }
 
@@ -164,7 +168,7 @@ contract UniswapV2Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV
         }(amountOut_, path_, receiver_.resolve(), block.timestamp)[0];
 
         if (amountInMax_ > spentFundsAmount_) {
-            receiver_.pay(amountInMax_ - spentFundsAmount_);
+            transferNative(receiver_, amountInMax_ - spentFundsAmount_);
         }
     }
 }

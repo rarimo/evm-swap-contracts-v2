@@ -10,15 +10,20 @@ import "@uniswap/v3-periphery/contracts/interfaces/IPeripheryPayments.sol";
 
 import "../../libs/BytesHelper.sol";
 import "../../libs/Approver.sol";
-import "../../libs/Payer.sol";
+import "../../libs/Resolver.sol";
 import "../../master-facet/MasterRouterStorage.sol";
 import "../storages/UniswapV3RouterStorage.sol";
+import "./TransferRouter.sol";
 
-contract UniswapV3Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV3RouterStorage {
+contract UniswapV3Router is
+    OwnableDiamondStorage,
+    MasterRouterStorage,
+    UniswapV3RouterStorage,
+    TransferRouter
+{
     using SafeERC20 for IERC20;
     using BytesHelper for bytes;
     using Approver for *;
-    using Payer for *;
     using Resolver for address;
 
     function setUniswapV3RouterAddress(address swapV3Router_) external onlyOwner {
@@ -91,9 +96,9 @@ contract UniswapV3Router is OwnableDiamondStorage, MasterRouterStorage, UniswapV
         if (isNative_) {
             IPeripheryPayments(swapV3Router_).refundETH();
 
-            receiver_.pay(amountInMaximum_ - spentFundsAmount_);
+            transferNative(receiver_, amountInMaximum_ - spentFundsAmount_);
         } else {
-            IERC20(tokenIn_).pay(receiver_, amountInMaximum_ - spentFundsAmount_);
+            transferERC20(tokenIn_, receiver_, amountInMaximum_ - spentFundsAmount_);
         }
     }
 }

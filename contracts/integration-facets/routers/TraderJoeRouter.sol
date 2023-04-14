@@ -8,14 +8,19 @@ import "@dlsl/dev-modules/diamond/presets/OwnableDiamond/OwnableDiamondStorage.s
 import "@traderjoe-xyz/core/contracts/traderjoe/interfaces/IJoeRouter01.sol";
 
 import "../../libs/Approver.sol";
-import "../../libs/Payer.sol";
+import "../../libs/Resolver.sol";
 import "../../master-facet/MasterRouterStorage.sol";
 import "../storages/TraderJoeRouterStorage.sol";
+import "./TransferRouter.sol";
 
-contract TraderJoeRouter is OwnableDiamondStorage, MasterRouterStorage, TraderJoeRouterStorage {
+contract TraderJoeRouter is
+    OwnableDiamondStorage,
+    MasterRouterStorage,
+    TraderJoeRouterStorage,
+    TransferRouter
+{
     using SafeERC20 for IERC20;
     using Approver for *;
-    using Payer for *;
     using Resolver for address;
 
     function setTraderJoeRouterAddress(address traderJoeRouter_) external onlyOwner {
@@ -76,7 +81,7 @@ contract TraderJoeRouter is OwnableDiamondStorage, MasterRouterStorage, TraderJo
         )[0];
 
         if (amountInMax_ > spentFundsAmount_) {
-            IERC20(tokenIn_).pay(receiver_, amountInMax_ - spentFundsAmount_);
+            transferERC20(tokenIn_, receiver_, amountInMax_ - spentFundsAmount_);
         }
     }
 
@@ -121,7 +126,7 @@ contract TraderJoeRouter is OwnableDiamondStorage, MasterRouterStorage, TraderJo
         )[0];
 
         if (amountInMax_ > spentFundsAmount_) {
-            IERC20(tokenIn_).pay(receiver_, amountInMax_ - spentFundsAmount_);
+            transferERC20(tokenIn_, receiver_, amountInMax_ - spentFundsAmount_);
         }
     }
 
@@ -163,7 +168,7 @@ contract TraderJoeRouter is OwnableDiamondStorage, MasterRouterStorage, TraderJo
         }(amountOut_, path_, receiver_.resolve(), block.timestamp)[0];
 
         if (amountInMax_ > spentFundsAmount_) {
-            receiver_.pay(amountInMax_ - spentFundsAmount_);
+            transferNative(receiver_, amountInMax_ - spentFundsAmount_);
         }
     }
 }
