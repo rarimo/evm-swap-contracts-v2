@@ -5,19 +5,19 @@ library BytesHelper {
     function getFirstToken(bytes calldata path_) internal pure returns (address) {
         require(path_.length > 42, "BytesHelper: invalid path length");
 
-        return _toAddress(path_, 0);
+        return toAddress(path_, 0);
     }
 
     function getLastToken(bytes calldata path_) internal pure returns (address) {
         require(path_.length > 42, "BytesHelper: invalid path length");
 
-        return _toAddress(path_, path_.length - 20);
+        return toAddress(path_, path_.length - 20);
     }
 
-    function _toAddress(
+    function toAddress(
         bytes memory path_,
         uint256 start_
-    ) private pure returns (address tokenAddress_) {
+    ) internal pure returns (address tokenAddress_) {
         assembly {
             tokenAddress_ := shr(96, mload(add(add(path_, 0x20), start_)))
         }
