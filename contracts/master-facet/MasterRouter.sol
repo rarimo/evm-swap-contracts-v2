@@ -8,6 +8,7 @@ import "@dlsl/dev-modules/diamond/DiamondStorage.sol";
 
 import "../libs/Commands.sol";
 import "./MasterRouterStorage.sol";
+import "../SwapDiamondStorage.sol";
 import "../integration-facets/routers/BridgeRouter.sol";
 import "../integration-facets/routers/TransferRouter.sol";
 import "../integration-facets/routers/WrapRouter.sol";
@@ -15,7 +16,6 @@ import "../integration-facets/routers/MulticallRouter.sol";
 import "../integration-facets/routers/UniswapV2Router.sol";
 import "../integration-facets/routers/UniswapV3Router.sol";
 import "../integration-facets/routers/TraderJoeRouter.sol";
-import "../SwapDiamondStorage.sol";
 
 contract MasterRouter is
     DiamondStorage,
