@@ -6,13 +6,13 @@ import "@dlsl/dev-modules/diamond/presets/OwnableDiamond/OwnableDiamond.sol";
 import "./SwapDiamondStorage.sol";
 
 contract SwapDiamond is OwnableDiamond, SwapDiamondStorage {
-    function addFacet(address facet_, bytes4[] memory selectors_) public override {
+    function addFacet(address facet_, bytes4[] calldata selectors_) public override {
         super.addFacet(facet_, selectors_);
 
         _setType(selectors_, SelectorType.SwapDiamond);
     }
 
-    function removeFacet(address facet_, bytes4[] memory selectors_) public override {
+    function removeFacet(address facet_, bytes4[] calldata selectors_) public override {
         super.removeFacet(facet_, selectors_);
 
         _setType(selectors_, SelectorType.Undefined);
@@ -20,8 +20,8 @@ contract SwapDiamond is OwnableDiamond, SwapDiamondStorage {
 
     function updateFacet(
         address facet_,
-        bytes4[] memory fromSelectors_,
-        bytes4[] memory toSelectors_
+        bytes4[] calldata fromSelectors_,
+        bytes4[] calldata toSelectors_
     ) public override {
         super.updateFacet(facet_, fromSelectors_, toSelectors_);
 
@@ -31,7 +31,7 @@ contract SwapDiamond is OwnableDiamond, SwapDiamondStorage {
 
     function addFacet(
         address facet_,
-        bytes4[] memory selectors_,
+        bytes4[] calldata selectors_,
         SelectorType[] calldata types_
     ) external {
         super.addFacet(facet_, selectors_);
@@ -41,8 +41,8 @@ contract SwapDiamond is OwnableDiamond, SwapDiamondStorage {
 
     function updateFacet(
         address facet_,
-        bytes4[] memory fromSelectors_,
-        bytes4[] memory toSelectors_,
+        bytes4[] calldata fromSelectors_,
+        bytes4[] calldata toSelectors_,
         SelectorType[] calldata toTypes_
     ) external {
         super.updateFacet(facet_, fromSelectors_, toSelectors_);
@@ -51,13 +51,13 @@ contract SwapDiamond is OwnableDiamond, SwapDiamondStorage {
         _setTypes(toSelectors_, toTypes_);
     }
 
-    function _setType(bytes4[] memory selectors_, SelectorType type_) internal {
+    function _setType(bytes4[] calldata selectors_, SelectorType type_) internal {
         for (uint256 i = 0; i < selectors_.length; ++i) {
             _getSwapDiamondStorage().selectorTypes[selectors_[i]] = type_;
         }
     }
 
-    function _setTypes(bytes4[] memory selectors_, SelectorType[] calldata types_) internal {
+    function _setTypes(bytes4[] calldata selectors_, SelectorType[] calldata types_) internal {
         require(selectors_.length == types_.length, "SwapDiamond: lengths mismatch");
 
         for (uint256 i = 0; i < selectors_.length; ++i) {
