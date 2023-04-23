@@ -9,15 +9,15 @@ contract WrapRouterStorage {
         address weth9;
     }
 
-    function getWrapRouterStorage() internal pure returns (WRStorage storage _ds) {
+    function getWETH9Address() public view returns (address weth9_) {
+        return _getWrapRouterStorage().weth9;
+    }
+
+    function _getWrapRouterStorage() internal pure returns (WRStorage storage _ds) {
         bytes32 slot_ = WRAP_ROUTER_STORAGE_SLOT;
 
         assembly {
             _ds.slot := slot_
         }
-    }
-
-    function getWETH9Address() public view returns (address weth9_) {
-        return getWrapRouterStorage().weth9;
     }
 }

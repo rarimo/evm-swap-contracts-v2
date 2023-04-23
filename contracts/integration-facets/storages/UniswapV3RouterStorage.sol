@@ -9,15 +9,15 @@ contract UniswapV3RouterStorage {
         address swapV3Router;
     }
 
-    function getUniswapV3RouterStorage() internal pure returns (U3Storage storage _ds) {
+    function getSwapV3Router() public view returns (address swapV3Router_) {
+        return _getUniswapV3RouterStorage().swapV3Router;
+    }
+
+    function _getUniswapV3RouterStorage() internal pure returns (U3Storage storage _ds) {
         bytes32 slot_ = UNISWAP_V3_ROUTER_STORAGE_SLOT;
 
         assembly {
             _ds.slot := slot_
         }
-    }
-
-    function getSwapV3Router() public view returns (address swapV3Router_) {
-        return getUniswapV3RouterStorage().swapV3Router;
     }
 }

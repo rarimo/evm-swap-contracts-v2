@@ -20,7 +20,7 @@ contract BridgeRouter is OwnableDiamondStorage, MasterRouterStorage, BridgeRoute
     using SafeERC20 for IERC20;
 
     function setBridgeAddress(address bridge_) external onlyOwner {
-        getBridgeRouterStorage().bridge = bridge_;
+        _getBridgeRouterStorage().bridge = bridge_;
     }
 
     function bridgeERC20(

@@ -13,7 +13,7 @@ contract WrapRouter is OwnableDiamondStorage, WrapRouterStorage, TransferRouter 
     using Resolver for uint256;
 
     function setWETH9Address(address weth9_) external onlyOwner {
-        getWrapRouterStorage().weth9 = weth9_;
+        _getWrapRouterStorage().weth9 = weth9_;
     }
 
     function wrap(uint256 amount_, address receiver_) external {

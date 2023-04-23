@@ -24,7 +24,7 @@ contract TraderJoeRouter is
     using Resolver for address;
 
     function setTraderJoeRouterAddress(address traderJoeRouter_) external onlyOwner {
-        getTraderJoeRouterStorage().traderJoeRouter = traderJoeRouter_;
+        _getTraderJoeRouterStorage().traderJoeRouter = traderJoeRouter_;
     }
 
     function swapExactTokensForTokens(

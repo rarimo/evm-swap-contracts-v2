@@ -24,7 +24,7 @@ contract UniswapV2Router is
     using Resolver for address;
 
     function setUniswapV2RouterAddress(address swapV2Router_) external onlyOwner {
-        getUniswapV2RouterStorage().swapV2Router = swapV2Router_;
+        _getUniswapV2RouterStorage().swapV2Router = swapV2Router_;
     }
 
     function swapExactTokensForTokens(

@@ -9,15 +9,15 @@ contract BridgeRouterStorage {
         address bridge;
     }
 
-    function getBridgeRouterStorage() internal pure returns (BRStorage storage _ds) {
+    function getBridgeAddress() public view returns (address bridge_) {
+        return _getBridgeRouterStorage().bridge;
+    }
+
+    function _getBridgeRouterStorage() internal pure returns (BRStorage storage _ds) {
         bytes32 slot_ = BRIDGE_ROUTER_STORAGE_SLOT;
 
         assembly {
             _ds.slot := slot_
         }
-    }
-
-    function getBridgeAddress() public view returns (address bridge_) {
-        return getBridgeRouterStorage().bridge;
     }
 }

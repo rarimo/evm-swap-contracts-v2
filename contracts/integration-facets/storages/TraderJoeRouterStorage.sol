@@ -9,15 +9,15 @@ contract TraderJoeRouterStorage {
         address traderJoeRouter;
     }
 
-    function getTraderJoeRouterStorage() internal pure returns (TJStorage storage _ds) {
+    function getTraderJoeRouter() public view returns (address traderJoeRouter_) {
+        return _getTraderJoeRouterStorage().traderJoeRouter;
+    }
+
+    function _getTraderJoeRouterStorage() internal pure returns (TJStorage storage _ds) {
         bytes32 slot_ = TRADER_JOE_ROUTER_STORAGE_SLOT;
 
         assembly {
             _ds.slot := slot_
         }
-    }
-
-    function getTraderJoeRouter() public view returns (address traderJoeRouter_) {
-        return getTraderJoeRouterStorage().traderJoeRouter;
     }
 }

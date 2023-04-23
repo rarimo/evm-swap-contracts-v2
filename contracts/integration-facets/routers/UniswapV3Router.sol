@@ -27,7 +27,7 @@ contract UniswapV3Router is
     using Resolver for address;
 
     function setUniswapV3RouterAddress(address swapV3Router_) external onlyOwner {
-        getUniswapV3RouterStorage().swapV3Router = swapV3Router_;
+        _getUniswapV3RouterStorage().swapV3Router = swapV3Router_;
     }
 
     function exactInput(
