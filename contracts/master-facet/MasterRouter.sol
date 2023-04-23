@@ -15,8 +15,15 @@ import "../integration-facets/routers/MulticallRouter.sol";
 import "../integration-facets/routers/UniswapV2Router.sol";
 import "../integration-facets/routers/UniswapV3Router.sol";
 import "../integration-facets/routers/TraderJoeRouter.sol";
+import "../SwapDiamondStorage.sol";
 
-contract MasterRouter is DiamondStorage, MasterRouterStorage, ERC721Holder, ERC1155Holder {
+contract MasterRouter is
+    DiamondStorage,
+    MasterRouterStorage,
+    SwapDiamondStorage,
+    ERC721Holder,
+    ERC1155Holder
+{
     struct Payload {
         uint256 command;
         bool skipRevert;
@@ -35,7 +42,10 @@ contract MasterRouter is DiamondStorage, MasterRouterStorage, ERC721Holder, ERC1
     function _handle(Payload calldata payload_) internal {
         bytes4 funcSelector_ = _getSelector(payload_.command);
 
-        require(funcSelector_ != bytes4(0), "MasterRouter: invalid command");
+        require(
+            getSelectorType(funcSelector_) == SelectorType.MasterRouter,
+            "MasterRouter: invalid command"
+        );
 
         (bool ok_, ) = getFacetBySelector(funcSelector_).delegatecall(
             abi.encodePacked(funcSelector_, payload_.data)
