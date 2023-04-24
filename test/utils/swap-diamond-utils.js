@@ -382,19 +382,19 @@ const getTransferNativeData = (receiver, amount) => {
   );
 };
 
-const getWrapNativeData = (amount, receiver) => {
+const getWrapNativeData = (receiver, amount) => {
   return parse(
     {
       inputs: [
         {
-          internalType: "uint256",
-          name: "amount_",
-          type: "uint256",
-        },
-        {
           internalType: "address",
           name: "receiver_",
           type: "address",
+        },
+        {
+          internalType: "uint256",
+          name: "amount_",
+          type: "uint256",
         },
       ],
       name: "wrap",
@@ -402,24 +402,24 @@ const getWrapNativeData = (amount, receiver) => {
       stateMutability: "nonpayable",
       type: "function",
     },
-    [amount, receiver],
+    [receiver, amount],
     Commands.WRAP_NATIVE
   );
 };
 
-const getUnwrapNativeData = (amount, receiver) => {
+const getUnwrapNativeData = (receiver, amount) => {
   return parse(
     {
       inputs: [
         {
-          internalType: "uint256",
-          name: "amount_",
-          type: "uint256",
-        },
-        {
           internalType: "address",
           name: "receiver_",
           type: "address",
+        },
+        {
+          internalType: "uint256",
+          name: "amount_",
+          type: "uint256",
         },
       ],
       name: "unwrap",
@@ -427,7 +427,7 @@ const getUnwrapNativeData = (amount, receiver) => {
       stateMutability: "nonpayable",
       type: "function",
     },
-    [amount, receiver],
+    [receiver, amount],
     Commands.UNWRAP_NATIVE
   );
 };
