@@ -1,17 +1,17 @@
-const { toBN } = require("../../scripts/utils/utils");
+import { BigNumber } from "ethers";
 
-const CONTRACT_BALANCE = toBN(2).pow(255);
+export const CONTRACT_BALANCE = BigNumber.from(2).pow(255);
 
-const THIS_ADDRESS = "0x0000000000000000000000000000000000000001";
-const CALLER_ADDRESS = "0x0000000000000000000000000000000000000002";
+export const THIS_ADDRESS = "0x0000000000000000000000000000000000000001";
+export const CALLER_ADDRESS = "0x0000000000000000000000000000000000000002";
 
-const SelectorType = {
+export const SelectorType = {
   Undefined: 0,
   SwapDiamond: 1,
   MasterRouter: 2,
 };
 
-const Commands = {
+export const Commands = {
   UNDEFINED: 0,
   BRIDGE_ERC20: 1,
   BRIDGE_ERC721: 2,
@@ -38,12 +38,4 @@ const Commands = {
   TJ_SWAP_TOKENS_FOR_EXACT_AVAX: 73,
   TJ_SWAP_EXACT_TOKENS_FOR_AVAX: 74,
   TJ_SWAP_AVAX_FOR_EXACT_TOKENS: 75,
-};
-
-module.exports = {
-  CONTRACT_BALANCE,
-  THIS_ADDRESS,
-  CALLER_ADDRESS,
-  SelectorType,
-  Commands,
 };
