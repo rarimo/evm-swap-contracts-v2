@@ -1,7 +1,7 @@
 const { accounts } = require("./../scripts/utils/utils");
 
 const Reverter = require("./helpers/reverter");
-const { SelectorType } = require("./utils/contants");
+const { SelectorType, THIS_ADDRESS } = require("./utils/contants");
 const {
   getTransferERC20Data,
   getSetWETH9AddressData,
@@ -39,6 +39,7 @@ const {
   getOnERC1155BatchReceivedData,
   getSupportsInterfaceData,
 } = require("./utils/swap-diamond-utils");
+const { wei } = require("../scripts/utils/utils");
 
 const SwapDiamond = artifacts.require("SwapDiamond");
 const MasterRouter = artifacts.require("MasterRouter");
@@ -49,6 +50,7 @@ const TransferRouter = artifacts.require("TransferRouter");
 const UniswapV2Router = artifacts.require("UniswapV2Router");
 const UniswapV3Router = artifacts.require("UniswapV3Router");
 const WrapRouter = artifacts.require("WrapRouter");
+const WETH9Mock = artifacts.require("WETH9Mock");
 
 describe("SwapDiamond", async () => {
   const reverter = new Reverter();
@@ -111,7 +113,7 @@ describe("SwapDiamond", async () => {
       ]
     );
 
-    await diamond.addFacet(multicallRouter.address, getMulticallData().asSelector()[SelectorType.MasterRouter]);
+    await diamond.addFacet(multicallRouter.address, [getMulticallData().asSelector()], [SelectorType.MasterRouter]);
 
     await diamond.addFacet(
       traderJoeRouter.address,
@@ -146,27 +148,27 @@ describe("SwapDiamond", async () => {
       [SelectorType.MasterRouter, SelectorType.MasterRouter, SelectorType.MasterRouter, SelectorType.MasterRouter]
     );
 
-    await diamond.addFacet(
-      uniswapV2Router.address,
-      [
-        getSetUniswapV2RouterAddressData().asSelector(),
-        getUniswapV2SwapETHForExactTokensData().asSelector(),
-        getUniswapV2SwapExactETHForTokensData().asSelector(),
-        getUniswapV2SwapExactTokensForETHData().asSelector(),
-        getUniswapV2SwapExactTokensForTokensData().asSelector(),
-        getUniswapV2SwapTokensForExactETHData().asSelector(),
-        getUniswapV2SwapTokensForExactTokensData().asSelector(),
-      ],
-      [
-        SelectorType.SwapDiamond,
-        SelectorType.MasterRouter,
-        SelectorType.MasterRouter,
-        SelectorType.MasterRouter,
-        SelectorType.MasterRouter,
-        SelectorType.MasterRouter,
-        SelectorType.MasterRouter,
-      ]
-    );
+    // await diamond.addFacet(
+    //   uniswapV2Router.address,
+    //   [
+    //     getSetUniswapV2RouterAddressData().asSelector(),
+    //     getUniswapV2SwapETHForExactTokensData().asSelector(),
+    //     getUniswapV2SwapExactETHForTokensData().asSelector(),
+    //     getUniswapV2SwapExactTokensForETHData().asSelector(),
+    //     getUniswapV2SwapExactTokensForTokensData().asSelector(),
+    //     getUniswapV2SwapTokensForExactETHData().asSelector(),
+    //     getUniswapV2SwapTokensForExactTokensData().asSelector(),
+    //   ],
+    //   [
+    //     SelectorType.SwapDiamond,
+    //     SelectorType.MasterRouter,
+    //     SelectorType.MasterRouter,
+    //     SelectorType.MasterRouter,
+    //     SelectorType.MasterRouter,
+    //     SelectorType.MasterRouter,
+    //     SelectorType.MasterRouter,
+    //   ]
+    // );
 
     await diamond.addFacet(
       uniswapV3Router.address,
@@ -184,10 +186,24 @@ describe("SwapDiamond", async () => {
       [SelectorType.SwapDiamond, SelectorType.MasterRouter, SelectorType.MasterRouter]
     );
 
+    diamond = await MasterRouter.at(diamond.address);
+
     await reverter.snapshot();
   });
 
   beforeEach(async () => {});
 
   afterEach(reverter.revert);
+
+  it("dev", async () => {
+    const weth9 = await WETH9Mock.new();
+
+    await weth9.mint(OWNER, wei("100"));
+
+    await (await WrapRouter.at(diamond.address)).setWETH9Address(weth9.address);
+
+    await (
+      await MasterRouter.at(diamond.address)
+    ).make([getWrapNativeData(THIS_ADDRESS, wei(1)).asPayload()], { value: wei(1) });
+  });
 });

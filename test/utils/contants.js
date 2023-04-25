@@ -1,3 +1,10 @@
+const { toBN } = require("../../scripts/utils/utils");
+
+const CONTRACT_BALANCE = toBN(2).pow(255);
+
+const THIS_ADDRESS = "0x0000000000000000000000000000000000000001";
+const CALLER_ADDRESS = "0x0000000000000000000000000000000000000002";
+
 const SelectorType = {
   Undefined: 0,
   SwapDiamond: 1,
@@ -34,6 +41,9 @@ const Commands = {
 };
 
 module.exports = {
+  CONTRACT_BALANCE,
+  THIS_ADDRESS,
+  CALLER_ADDRESS,
   SelectorType,
   Commands,
 };

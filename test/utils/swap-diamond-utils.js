@@ -15,7 +15,7 @@ const parse = (abi, params, command) => {
     asSelector: () => selector,
     asArgumentsData: () => argumentsData,
     asFunctionCall: () => functionCallData,
-    asPayload: (skipRevert, callerPayer) => ({
+    asPayload: (callerPayer = false, skipRevert = false) => ({
       command: command,
       skipRevert: skipRevert,
       callerPayer: callerPayer,
