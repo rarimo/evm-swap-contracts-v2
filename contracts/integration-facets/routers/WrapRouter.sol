@@ -16,7 +16,7 @@ contract WrapRouter is OwnableDiamondStorage, WrapRouterStorage, TransferRouter 
         _getWrapRouterStorage().weth9 = weth9_;
     }
 
-    function wrap(address receiver_, uint256 amount_) external {
+    function wrap(address receiver_, uint256 amount_) external payable {
         amount_ = amount_.resolve();
 
         address weth9_ = getWETH9Address();
@@ -25,7 +25,7 @@ contract WrapRouter is OwnableDiamondStorage, WrapRouterStorage, TransferRouter 
         transferERC20(weth9_, receiver_, amount_);
     }
 
-    function unwrap(address receiver_, uint256 amount_) external {
+    function unwrap(address receiver_, uint256 amount_) external payable {
         address weth9_ = getWETH9Address();
 
         amount_ = amount_.resolve(IERC20(weth9_));

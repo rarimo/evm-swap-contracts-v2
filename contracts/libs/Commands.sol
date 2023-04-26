@@ -22,22 +22,22 @@ library Commands {
     uint256 internal constant MULTICALL = 25;
 
     /// @dev UniswapV2 facet commands: 50 <= command <= 59
-    uint256 internal constant UV2_SWAP_EXACT_TOKENS_FOR_TOKENS = 50;
-    uint256 internal constant UV2_SWAP_TOKENS_FOR_EXACT_TOKENS = 51;
-    uint256 internal constant UV2_SWAP_EXACT_ETH_FOR_TOKENS = 52;
-    uint256 internal constant UV2_SWAP_TOKENS_FOR_EXACT_ETH = 53;
-    uint256 internal constant UV2_SWAP_EXACT_TOKENS_FOR_ETH = 54;
-    uint256 internal constant UV2_SWAP_ETH_FOR_EXACT_TOKENS = 55;
+    uint256 internal constant SWAP_EXACT_TOKENS_FOR_TOKENS_V2 = 50;
+    uint256 internal constant SWAP_TOKENS_FOR_EXACT_TOKENS_V2 = 51;
+    uint256 internal constant SWAP_EXACT_ETH_FOR_TOKENS = 52;
+    uint256 internal constant SWAP_TOKENS_FOR_EXACT_ETH = 53;
+    uint256 internal constant SWAP_EXACT_TOKENS_FOR_ETH = 54;
+    uint256 internal constant SWAP_ETH_FOR_EXACT_TOKENS = 55;
 
     /// @dev UniswapV3 facet commands: 60 <= command <= 69
     uint256 internal constant EXACT_INPUT = 60;
     uint256 internal constant EXACT_OUTPUT = 61;
 
     /// @dev TraderJoe facet commands: 70 <= command <= 79
-    uint256 internal constant TJ_SWAP_EXACT_TOKENS_FOR_TOKENS = 70;
-    uint256 internal constant TJ_SWAP_TOKENS_FOR_EXACT_TOKENS = 71;
-    uint256 internal constant TJ_SWAP_EXACT_AVAX_FOR_TOKENS = 72;
-    uint256 internal constant TJ_SWAP_TOKENS_FOR_EXACT_AVAX = 73;
-    uint256 internal constant TJ_SWAP_EXACT_TOKENS_FOR_AVAX = 74;
-    uint256 internal constant TJ_SWAP_AVAX_FOR_EXACT_TOKENS = 75;
+    uint256 internal constant SWAP_EXACT_TOKENS_FOR_TOKENS_TJ = 70;
+    uint256 internal constant SWAP_TOKENS_FOR_EXACT_TOKENS_TJ = 71;
+    uint256 internal constant SWAP_EXACT_AVAX_FOR_TOKENS = 72;
+    uint256 internal constant SWAP_TOKENS_FOR_EXACT_AVAX = 73;
+    uint256 internal constant SWAP_EXACT_TOKENS_FOR_AVAX = 74;
+    uint256 internal constant SWAP_AVAX_FOR_EXACT_TOKENS = 75;
 }

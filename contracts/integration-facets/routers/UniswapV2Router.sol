@@ -27,13 +27,13 @@ contract UniswapV2Router is
         _getUniswapV2RouterStorage().swapV2Router = swapV2Router_;
     }
 
-    function swapExactTokensForTokens(
+    function swapExactTokensForTokensV2(
         bool callerPayer_,
         address receiver_,
         uint256 amountIn_,
         uint256 amountOutMin_,
         address[] calldata path_
-    ) external {
+    ) external payable {
         require(path_.length >= 2, "UniswapV2Router: invalid path");
 
         address tokenIn_ = path_[0];
@@ -54,13 +54,13 @@ contract UniswapV2Router is
         );
     }
 
-    function swapTokensForExactTokens(
+    function swapTokensForExactTokensV2(
         bool callerPayer_,
         address receiver_,
         uint256 amountOut_,
         uint256 amountInMax_,
         address[] calldata path_
-    ) external {
+    ) external payable {
         require(path_.length >= 2, "UniswapV2Router: invalid path");
 
         address tokenIn_ = path_[0];
@@ -90,7 +90,7 @@ contract UniswapV2Router is
         uint256 amountIn_,
         uint256 amountOutMin_,
         address[] calldata path_
-    ) external {
+    ) external payable {
         IUniswapV2Router01(getSwapV2Router()).swapExactETHForTokens{value: amountIn_}(
             amountOutMin_,
             path_,
@@ -105,7 +105,7 @@ contract UniswapV2Router is
         uint256 amountOut_,
         uint256 amountInMax_,
         address[] calldata path_
-    ) external {
+    ) external payable {
         require(path_.length >= 2, "UniswapV2Router: invalid path");
 
         address tokenIn_ = path_[0];
@@ -136,7 +136,7 @@ contract UniswapV2Router is
         uint256 amountIn_,
         uint256 amountOutMin_,
         address[] calldata path_
-    ) external {
+    ) external payable {
         require(path_.length >= 2, "UniswapV2Router: invalid path");
 
         address tokenIn_ = path_[0];
@@ -162,7 +162,7 @@ contract UniswapV2Router is
         uint256 amountOut_,
         uint256 amountInMax_,
         address[] calldata path_
-    ) external {
+    ) external payable {
         uint256 spentFundsAmount_ = IUniswapV2Router01(getSwapV2Router()).swapETHForExactTokens{
             value: amountInMax_
         }(amountOut_, path_, receiver_.resolve(), block.timestamp)[0];

@@ -12,7 +12,7 @@ contract TransferRouter {
     using SafeERC20 for IERC20;
     using Resolver for *;
 
-    function transferERC20(address token_, address receiver_, uint256 amount_) public {
+    function transferERC20(address token_, address receiver_, uint256 amount_) public payable {
         receiver_ = receiver_.resolve();
 
         if (receiver_ == address(this)) {
@@ -26,7 +26,7 @@ contract TransferRouter {
         address token_,
         address receiver_,
         uint256[] calldata nftIds_
-    ) external {
+    ) external payable {
         receiver_ = receiver_.resolve();
 
         if (receiver_ == address(this)) {
@@ -43,7 +43,7 @@ contract TransferRouter {
         address receiver_,
         uint256[] calldata tokenIds_,
         uint256[] calldata amounts_
-    ) external {
+    ) external payable {
         require(tokenIds_.length == amounts_.length, "TransferRouter: lengths mismatch");
 
         receiver_ = receiver_.resolve();
@@ -65,7 +65,7 @@ contract TransferRouter {
         }
     }
 
-    function transferNative(address receiver_, uint256 amount_) public {
+    function transferNative(address receiver_, uint256 amount_) public payable {
         receiver_ = receiver_.resolve();
 
         if (receiver_ == address(this)) {

@@ -37,7 +37,7 @@ contract UniswapV3Router is
         uint256 amountIn_,
         uint256 amountOutMinimum_,
         bytes calldata path_
-    ) external {
+    ) external payable {
         address tokenIn_ = path_.getFirstToken();
 
         if (callerPayer_ && !isNative_) {
@@ -68,7 +68,7 @@ contract UniswapV3Router is
         uint256 amountOut_,
         uint256 amountInMaximum_,
         bytes calldata path_
-    ) external {
+    ) external payable {
         address tokenIn_ = path_.getLastToken();
 
         if (callerPayer_ && !isNative_) {

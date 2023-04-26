@@ -27,13 +27,13 @@ contract TraderJoeRouter is
         _getTraderJoeRouterStorage().traderJoeRouter = traderJoeRouter_;
     }
 
-    function swapExactTokensForTokens(
+    function swapExactTokensForTokensTJ(
         bool callerPayer_,
         address receiver_,
         uint256 amountIn_,
         uint256 amountOutMin_,
         address[] calldata path_
-    ) external {
+    ) external payable {
         require(path_.length >= 2, "TraderJoeRouter: invalid path");
 
         address tokenIn_ = path_[0];
@@ -54,13 +54,13 @@ contract TraderJoeRouter is
         );
     }
 
-    function swapTokensForExactTokens(
+    function swapTokensForExactTokensTJ(
         bool callerPayer_,
         address receiver_,
         uint256 amountOut_,
         uint256 amountInMax_,
         address[] calldata path_
-    ) external {
+    ) external payable {
         require(path_.length >= 2, "TraderJoeRouter: invalid path");
 
         address tokenIn_ = path_[0];
@@ -90,7 +90,7 @@ contract TraderJoeRouter is
         uint256 amountIn_,
         uint256 amountOutMin_,
         address[] calldata path_
-    ) external {
+    ) external payable {
         IJoeRouter01(getTraderJoeRouter()).swapExactAVAXForTokens{value: amountIn_}(
             amountOutMin_,
             path_,
@@ -105,7 +105,7 @@ contract TraderJoeRouter is
         uint256 amountOut_,
         uint256 amountInMax_,
         address[] calldata path_
-    ) external {
+    ) external payable {
         require(path_.length >= 2, "TraderJoeRouter: invalid path");
 
         address tokenIn_ = path_[0];
@@ -136,7 +136,7 @@ contract TraderJoeRouter is
         uint256 amountIn_,
         uint256 amountOutMin_,
         address[] calldata path_
-    ) external {
+    ) external payable {
         require(path_.length >= 2, "TraderJoeRouter: invalid path");
 
         address tokenIn_ = path_[0];
@@ -162,7 +162,7 @@ contract TraderJoeRouter is
         uint256 amountOut_,
         uint256 amountInMax_,
         address[] calldata path_
-    ) external {
+    ) external payable {
         uint256 spentFundsAmount_ = IJoeRouter01(getTraderJoeRouter()).swapAVAXForExactTokens{
             value: amountInMax_
         }(amountOut_, path_, receiver_.resolve(), block.timestamp)[0];

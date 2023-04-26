@@ -10,7 +10,7 @@ contract MulticallRouter {
         address[] calldata targets_,
         bytes[] calldata data_,
         uint256[] calldata values_
-    ) external {
+    ) external payable {
         for (uint256 i = 0; i < targets_.length; ++i) {
             (bool ok_, ) = targets_[i].resolve().call{value: values_[i].resolve()}(data_[i]);
 

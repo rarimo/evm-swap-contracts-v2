@@ -31,7 +31,7 @@ contract BridgeRouter is OwnableDiamondStorage, MasterRouterStorage, BridgeRoute
         string calldata network_,
         string calldata receiver_,
         bool isWrapped_
-    ) external {
+    ) external payable {
         address bridge_ = getBridgeAddress();
 
         if (callerPayer_) {
@@ -52,7 +52,7 @@ contract BridgeRouter is OwnableDiamondStorage, MasterRouterStorage, BridgeRoute
         string calldata network_,
         string calldata receiver_,
         bool isWrapped_
-    ) external {
+    ) external payable {
         address bridge_ = getBridgeAddress();
 
         if (callerPayer_) {
@@ -72,7 +72,7 @@ contract BridgeRouter is OwnableDiamondStorage, MasterRouterStorage, BridgeRoute
         string calldata network_,
         string calldata receiver_,
         bool isWrapped_
-    ) external {
+    ) external payable {
         address bridge_ = getBridgeAddress();
 
         if (callerPayer_) {
@@ -104,7 +104,7 @@ contract BridgeRouter is OwnableDiamondStorage, MasterRouterStorage, BridgeRoute
         IBundler.Bundle calldata bundle_,
         string calldata network_,
         string calldata receiver_
-    ) external {
+    ) external payable {
         IBridge(getBridgeAddress()).depositNative{value: amount_.resolve()}(
             bundle_,
             network_,

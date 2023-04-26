@@ -117,17 +117,17 @@ contract MasterRouter is
     function _getUniswapV2Selector(
         uint256 command_
     ) internal pure returns (bytes4 uniswapV2Selector_) {
-        if (command_ == Commands.UV2_SWAP_EXACT_TOKENS_FOR_TOKENS) {
-            uniswapV2Selector_ = UniswapV2Router.swapExactTokensForTokens.selector;
-        } else if (command_ == Commands.UV2_SWAP_TOKENS_FOR_EXACT_TOKENS) {
-            uniswapV2Selector_ = UniswapV2Router.swapTokensForExactTokens.selector;
-        } else if (command_ == Commands.UV2_SWAP_EXACT_ETH_FOR_TOKENS) {
+        if (command_ == Commands.SWAP_EXACT_TOKENS_FOR_TOKENS_V2) {
+            uniswapV2Selector_ = UniswapV2Router.swapExactTokensForTokensV2.selector;
+        } else if (command_ == Commands.SWAP_TOKENS_FOR_EXACT_TOKENS_V2) {
+            uniswapV2Selector_ = UniswapV2Router.swapTokensForExactTokensV2.selector;
+        } else if (command_ == Commands.SWAP_EXACT_ETH_FOR_TOKENS) {
             uniswapV2Selector_ = UniswapV2Router.swapExactETHForTokens.selector;
-        } else if (command_ == Commands.UV2_SWAP_TOKENS_FOR_EXACT_ETH) {
+        } else if (command_ == Commands.SWAP_TOKENS_FOR_EXACT_ETH) {
             uniswapV2Selector_ = UniswapV2Router.swapTokensForExactETH.selector;
-        } else if (command_ == Commands.UV2_SWAP_EXACT_TOKENS_FOR_ETH) {
+        } else if (command_ == Commands.SWAP_EXACT_TOKENS_FOR_ETH) {
             uniswapV2Selector_ = UniswapV2Router.swapExactTokensForETH.selector;
-        } else if (command_ == Commands.UV2_SWAP_ETH_FOR_EXACT_TOKENS) {
+        } else if (command_ == Commands.SWAP_ETH_FOR_EXACT_TOKENS) {
             uniswapV2Selector_ = UniswapV2Router.swapETHForExactTokens.selector;
         }
     }
@@ -145,17 +145,17 @@ contract MasterRouter is
     function _getTraderJoeSelector(
         uint256 command_
     ) internal pure returns (bytes4 traderJoeSelector_) {
-        if (command_ == Commands.TJ_SWAP_EXACT_TOKENS_FOR_TOKENS) {
-            traderJoeSelector_ = TraderJoeRouter.swapExactTokensForTokens.selector;
-        } else if (command_ == Commands.TJ_SWAP_TOKENS_FOR_EXACT_TOKENS) {
-            traderJoeSelector_ = TraderJoeRouter.swapTokensForExactTokens.selector;
-        } else if (command_ == Commands.TJ_SWAP_EXACT_AVAX_FOR_TOKENS) {
+        if (command_ == Commands.SWAP_EXACT_TOKENS_FOR_TOKENS_TJ) {
+            traderJoeSelector_ = TraderJoeRouter.swapExactTokensForTokensTJ.selector;
+        } else if (command_ == Commands.SWAP_TOKENS_FOR_EXACT_TOKENS_TJ) {
+            traderJoeSelector_ = TraderJoeRouter.swapTokensForExactTokensTJ.selector;
+        } else if (command_ == Commands.SWAP_EXACT_AVAX_FOR_TOKENS) {
             traderJoeSelector_ = TraderJoeRouter.swapExactAVAXForTokens.selector;
-        } else if (command_ == Commands.TJ_SWAP_TOKENS_FOR_EXACT_AVAX) {
+        } else if (command_ == Commands.SWAP_TOKENS_FOR_EXACT_AVAX) {
             traderJoeSelector_ = TraderJoeRouter.swapTokensForExactAVAX.selector;
-        } else if (command_ == Commands.TJ_SWAP_EXACT_TOKENS_FOR_AVAX) {
+        } else if (command_ == Commands.SWAP_EXACT_TOKENS_FOR_AVAX) {
             traderJoeSelector_ = TraderJoeRouter.swapExactTokensForAVAX.selector;
-        } else if (command_ == Commands.TJ_SWAP_AVAX_FOR_EXACT_TOKENS) {
+        } else if (command_ == Commands.SWAP_AVAX_FOR_EXACT_TOKENS) {
             traderJoeSelector_ = TraderJoeRouter.swapAVAXForExactTokens.selector;
         }
     }
