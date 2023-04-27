@@ -14,7 +14,6 @@ contract WETH9Mock is IWETH9, ERC20Mock {
     function withdraw(uint256 amount_) external override {
         _burn(msg.sender, amount_);
 
-        (bool ok_, ) = msg.sender.call{value: amount_}("");
-        require(ok_, "WETH9Mock: failed to withdraw");
+        payable(msg.sender).transfer(amount_);
     }
 }
