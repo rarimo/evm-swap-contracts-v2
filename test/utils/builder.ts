@@ -104,17 +104,16 @@ export async function getBuilder() {
     }
 
     const abstractInterface = abstractFactory.interface;
+    const fragment = abstractInterface.getFunction(selector);
 
     let functionData = "";
 
-    const fragment = abstractInterface.getFunction(selector);
-
-    if (fragment?.inputs.length === values.length) {
+    if (fragment.inputs.length === values.length) {
       functionData = abstractInterface.encodeFunctionData(fragment, values);
     }
 
     return {
-      selector: abstractInterface?.getSighash(selector),
+      selector: abstractInterface.getSighash(selector),
       functionData: functionData,
       payload: (callerPayer: boolean = true, skipRevert: boolean = false) => ({
         command: getCommand(selector),
@@ -125,3 +124,5 @@ export async function getBuilder() {
     };
   };
 }
+
+export type Builder = Awaited<ReturnType<typeof getBuilder>>;

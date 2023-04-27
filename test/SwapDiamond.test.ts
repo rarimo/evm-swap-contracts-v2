@@ -7,7 +7,6 @@ import { Reverter } from "./helpers/reverter";
 import {
   BridgeRouter__factory,
   MasterRouter__factory,
-  MasterRouter,
   MulticallRouter__factory,
   SwapDiamond,
   SwapDiamond__factory,
@@ -16,16 +15,15 @@ import {
   UniswapV2Router__factory,
   UniswapV3Router__factory,
   WETH9Mock__factory,
-  WrapRouter,
   WrapRouter__factory,
 } from "../generated-types/ethers";
-import { getBuilder } from "./utils/builder";
+import { Builder, getBuilder } from "./utils/builder";
 import { SelectorType, THIS_ADDRESS } from "./utils/contants";
 
 describe("SwapDiamond", async () => {
   const reverter = new Reverter();
 
-  let builder: Awaited<ReturnType<typeof getBuilder>>;
+  let builder: Builder;
 
   let SwapDiamond: SwapDiamond__factory;
   let MasterRouter: MasterRouter__factory;
@@ -45,6 +43,7 @@ describe("SwapDiamond", async () => {
 
   before("setup", async () => {
     builder = await getBuilder();
+
     [OWNER, CALLER] = await ethers.getSigners();
 
     SwapDiamond = await ethers.getContractFactory("SwapDiamond");
