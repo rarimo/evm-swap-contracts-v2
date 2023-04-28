@@ -27,7 +27,6 @@ describe("SwapDiamond", () => {
   let ERC1155MintableBurnableFactory: ERC1155MintableBurnable__factory;
 
   let OWNER: SignerWithAddress;
-  let CALLER: SignerWithAddress;
 
   let diamond: SwapDiamond;
   let master: MasterRouter;
@@ -37,7 +36,7 @@ describe("SwapDiamond", () => {
   before("setup", async () => {
     builder = await getBuilder();
 
-    [OWNER, CALLER] = await ethers.getSigners();
+    [OWNER] = await ethers.getSigners();
 
     SwapDiamondFactory = await ethers.getContractFactory("SwapDiamond");
     MasterRouterFactory = await ethers.getContractFactory("MasterRouter");
