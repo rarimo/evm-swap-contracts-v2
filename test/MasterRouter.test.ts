@@ -14,7 +14,6 @@ import {
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { ethers } from "hardhat";
 import { SelectorType } from "./utils/contants";
-import { wei } from "../scripts/utils/utils";
 
 describe("SwapDiamond", () => {
   const reverter = new Reverter();
@@ -57,28 +56,6 @@ describe("SwapDiamond", () => {
   });
 
   afterEach(reverter.revert);
-
-  describe("#receive", () => {
-    it("should not receive if selector is not added", async () => {
-      const tx = OWNER.sendTransaction({
-        to: diamond.address,
-        value: wei("1"),
-      });
-
-      await expect(tx).to.be.revertedWith("Diamond: selector is not registered");
-    });
-
-    it("should receive if selector is added", async () => {
-      await diamond["addFacet(address,bytes4[],uint8[])"](master.address, ["0x00000000"], [SelectorType.SwapDiamond]);
-
-      const tx = OWNER.sendTransaction({
-        to: diamond.address,
-        value: wei("1"),
-      });
-
-      await expect(tx).to.changeEtherBalances([OWNER, diamond], [-wei("1"), wei("1")]);
-    });
-  });
 
   describe("#onERC721Received", () => {
     it("should not safeTransferFrom if selector is not added", async () => {

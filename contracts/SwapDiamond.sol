@@ -6,6 +6,8 @@ import "@dlsl/dev-modules/diamond/presets/OwnableDiamond/OwnableDiamond.sol";
 import "./SwapDiamondStorage.sol";
 
 contract SwapDiamond is OwnableDiamond, SwapDiamondStorage {
+    receive() external payable {}
+
     function addFacet(address facet_, bytes4[] calldata selectors_) public override {
         super.addFacet(facet_, selectors_);
 

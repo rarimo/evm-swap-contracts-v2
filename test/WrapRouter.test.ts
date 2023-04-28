@@ -55,8 +55,8 @@ describe("SwapDiamond", () => {
 
     await diamond["addFacet(address,bytes4[],uint8[])"](
       master.address,
-      ["0x00000000", builder("make").selector, builder("getCallerAddress").selector],
-      [SelectorType.SwapDiamond, SelectorType.SwapDiamond, SelectorType.SwapDiamond]
+      [builder("make").selector, builder("getCallerAddress").selector],
+      [SelectorType.SwapDiamond, SelectorType.SwapDiamond]
     );
     await diamond["addFacet(address,bytes4[],uint8[])"](
       wrap.address,

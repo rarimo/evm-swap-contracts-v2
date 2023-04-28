@@ -73,7 +73,6 @@ describe("SwapDiamond", async () => {
     await diamond["addFacet(address,bytes4[],uint8[])"](
       masterRouter.address,
       [
-        "0x00000000",
         builder("make").selector,
         builder("onERC721Received").selector,
         builder("onERC1155Received").selector,
@@ -81,7 +80,6 @@ describe("SwapDiamond", async () => {
         builder("supportsInterface").selector,
       ],
       [
-        SelectorType.SwapDiamond,
         SelectorType.SwapDiamond,
         SelectorType.SwapDiamond,
         SelectorType.SwapDiamond,

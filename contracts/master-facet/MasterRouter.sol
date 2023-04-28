@@ -31,8 +31,6 @@ contract MasterRouter is
         bytes data;
     }
 
-    receive() external payable {}
-
     function make(Payload[] calldata payloads_) external payable onlyCaller {
         for (uint256 i = 0; i < payloads_.length; ++i) {
             _handle(payloads_[i]);
