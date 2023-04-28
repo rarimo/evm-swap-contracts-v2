@@ -109,8 +109,8 @@ describe("SwapDiamond", () => {
 
       await erc1155.safeTransferFrom(OWNER.address, diamond.address, 1, 1, "0x");
 
-      expect(await erc1155.balanceOf(OWNER.address, 1)).to.eq(0n);
-      expect(await erc1155.balanceOf(diamond.address, 1)).to.eq(1n);
+      expect(await erc1155.balanceOf(OWNER.address, 1)).to.eq(0);
+      expect(await erc1155.balanceOf(diamond.address, 1)).to.eq(1);
     });
   });
 
