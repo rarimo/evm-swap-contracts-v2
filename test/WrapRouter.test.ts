@@ -7,7 +7,7 @@ import { ethers } from "hardhat";
 import { CALLER_ADDRESS, CONTRACT_BALANCE, SelectorType, THIS_ADDRESS } from "./utils/contants";
 import { wei } from "../scripts/utils/utils";
 
-describe("SwapDiamond", () => {
+describe("WrapRouter", () => {
   const reverter = new Reverter();
 
   let builder: Builder;

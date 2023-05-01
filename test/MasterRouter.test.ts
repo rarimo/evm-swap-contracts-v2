@@ -6,7 +6,7 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { ethers } from "hardhat";
 import { SelectorType } from "./utils/contants";
 
-describe("SwapDiamond", () => {
+describe("MasterRouter", () => {
   const reverter = new Reverter();
 
   let builder: Builder;
