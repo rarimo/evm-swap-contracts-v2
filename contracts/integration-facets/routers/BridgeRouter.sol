@@ -24,7 +24,6 @@ contract BridgeRouter is OwnableDiamondStorage, MasterRouterStorage, BridgeRoute
     }
 
     function bridgeERC20(
-        bool callerPayer_,
         address token_,
         uint256 amount_,
         IBundler.Bundle calldata bundle_,
@@ -34,18 +33,18 @@ contract BridgeRouter is OwnableDiamondStorage, MasterRouterStorage, BridgeRoute
     ) external payable {
         address bridge_ = getBridgeAddress();
 
-        if (callerPayer_) {
-            IERC20(token_).safeTransferFrom(getCallerAddress(), address(this), amount_);
-        } else {
-            amount_ = amount_.resolve(IERC20(token_));
-        }
-
         IERC20(token_).approveMax(bridge_);
-        IBridge(bridge_).depositERC20(token_, amount_, bundle_, network_, receiver_, isWrapped_);
+        IBridge(bridge_).depositERC20(
+            token_,
+            amount_.resolve(IERC20(token_)),
+            bundle_,
+            network_,
+            receiver_,
+            isWrapped_
+        );
     }
 
     function bridgeERC721(
-        bool callerPayer_,
         address token_,
         uint256 tokenId_,
         IBundler.Bundle calldata bundle_,
@@ -54,17 +53,12 @@ contract BridgeRouter is OwnableDiamondStorage, MasterRouterStorage, BridgeRoute
         bool isWrapped_
     ) external payable {
         address bridge_ = getBridgeAddress();
-
-        if (callerPayer_) {
-            IERC721(token_).safeTransferFrom(getCallerAddress(), address(this), tokenId_);
-        }
 
         IERC721(token_).approveMax(bridge_);
         IBridge(bridge_).depositERC721(token_, tokenId_, bundle_, network_, receiver_, isWrapped_);
     }
 
     function bridgeERC1155(
-        bool callerPayer_,
         address token_,
         uint256 tokenId_,
         uint256 amount_,
@@ -75,23 +69,11 @@ contract BridgeRouter is OwnableDiamondStorage, MasterRouterStorage, BridgeRoute
     ) external payable {
         address bridge_ = getBridgeAddress();
 
-        if (callerPayer_) {
-            IERC1155(token_).safeTransferFrom(
-                getCallerAddress(),
-                address(this),
-                tokenId_,
-                amount_,
-                ""
-            );
-        } else {
-            amount_ = amount_.resolve(IERC1155(token_), tokenId_);
-        }
-
         IERC1155(token_).approveMax(bridge_);
         IBridge(bridge_).depositERC1155(
             token_,
             tokenId_,
-            amount_,
+            amount_.resolve(IERC1155(token_), tokenId_),
             bundle_,
             network_,
             receiver_,

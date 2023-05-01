@@ -28,7 +28,6 @@ contract UniswapV2Router is
     }
 
     function swapExactTokensForTokensV2(
-        bool callerPayer_,
         address receiver_,
         uint256 amountIn_,
         uint256 amountOutMin_,
@@ -36,15 +35,9 @@ contract UniswapV2Router is
     ) external payable {
         require(path_.length >= 2, "UniswapV2Router: invalid path");
 
-        address tokenIn_ = path_[0];
-
-        if (callerPayer_) {
-            IERC20(tokenIn_).safeTransferFrom(getCallerAddress(), address(this), amountIn_);
-        }
-
         address swapV2router_ = getSwapV2Router();
 
-        IERC20(tokenIn_).approveMax(swapV2router_);
+        IERC20(path_[0]).approveMax(swapV2router_);
         IUniswapV2Router01(swapV2router_).swapExactTokensForTokens(
             amountIn_,
             amountOutMin_,
@@ -55,7 +48,6 @@ contract UniswapV2Router is
     }
 
     function swapTokensForExactTokensV2(
-        bool callerPayer_,
         address receiver_,
         uint256 amountOut_,
         uint256 amountInMax_,
@@ -64,11 +56,6 @@ contract UniswapV2Router is
         require(path_.length >= 2, "UniswapV2Router: invalid path");
 
         address tokenIn_ = path_[0];
-
-        if (callerPayer_) {
-            IERC20(tokenIn_).safeTransferFrom(getCallerAddress(), address(this), amountInMax_);
-        }
-
         address swapV2router_ = getSwapV2Router();
 
         IERC20(tokenIn_).approveMax(swapV2router_);
@@ -100,7 +87,6 @@ contract UniswapV2Router is
     }
 
     function swapTokensForExactETH(
-        bool callerPayer_,
         address receiver_,
         uint256 amountOut_,
         uint256 amountInMax_,
@@ -109,11 +95,6 @@ contract UniswapV2Router is
         require(path_.length >= 2, "UniswapV2Router: invalid path");
 
         address tokenIn_ = path_[0];
-
-        if (callerPayer_) {
-            IERC20(tokenIn_).safeTransferFrom(getCallerAddress(), address(this), amountInMax_);
-        }
-
         address swapV2router_ = getSwapV2Router();
 
         IERC20(tokenIn_).approveMax(swapV2router_);
@@ -131,7 +112,6 @@ contract UniswapV2Router is
     }
 
     function swapExactTokensForETH(
-        bool callerPayer_,
         address receiver_,
         uint256 amountIn_,
         uint256 amountOutMin_,
@@ -139,15 +119,9 @@ contract UniswapV2Router is
     ) external payable {
         require(path_.length >= 2, "UniswapV2Router: invalid path");
 
-        address tokenIn_ = path_[0];
-
-        if (callerPayer_) {
-            IERC20(tokenIn_).safeTransferFrom(getCallerAddress(), address(this), amountIn_);
-        }
-
         address swapV2router_ = getSwapV2Router();
 
-        IERC20(tokenIn_).approveMax(swapV2router_);
+        IERC20(path_[0]).approveMax(swapV2router_);
         IUniswapV2Router01(swapV2router_).swapExactTokensForETH(
             amountIn_,
             amountOutMin_,

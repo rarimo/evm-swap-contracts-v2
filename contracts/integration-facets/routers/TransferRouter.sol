@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 import "../../libs/Resolver.sol";
 
-contract TransferRouter {
+contract TransferRouter is MasterRouterStorage {
     using SafeERC20 for IERC20;
     using Resolver for *;
 
@@ -63,6 +63,30 @@ contract TransferRouter {
                 ""
             );
         }
+    }
+
+    function transferFromERC20(address token_, uint256 amount_) external payable {
+        IERC20(token_).safeTransferFrom(getCallerAddress(), address(this), amount_);
+    }
+
+    function transferFromERC721(address token_, uint256[] calldata nftIds_) external payable {
+        for (uint256 i = 0; i < nftIds_.length; i++) {
+            IERC721(token_).safeTransferFrom(getCallerAddress(), address(this), nftIds_[i], "");
+        }
+    }
+
+    function transferFromERC1155(
+        address token_,
+        uint256[] calldata tokenIds_,
+        uint256[] calldata amounts_
+    ) external payable {
+        IERC1155(token_).safeBatchTransferFrom(
+            getCallerAddress(),
+            address(this),
+            tokenIds_,
+            amounts_,
+            ""
+        );
     }
 
     function transferNative(address receiver_, uint256 amount_) public payable {

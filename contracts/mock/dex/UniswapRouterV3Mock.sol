@@ -8,7 +8,7 @@ import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
 import "./AbstractSwapRouterMock.sol";
 import "../../libs/BytesHelper.sol";
 
-contract UniswapRouterV3Mock is AbstractSwapRouterMock {
+contract UniswapV3RouterMock is AbstractSwapRouterMock {
     using ArrayHelper for address[];
     using BytesHelper for bytes;
 

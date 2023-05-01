@@ -31,23 +31,16 @@ contract UniswapV3Router is
     }
 
     function exactInput(
-        bool callerPayer_,
         bool isNative_,
         address receiver_,
         uint256 amountIn_,
         uint256 amountOutMinimum_,
         bytes calldata path_
     ) external payable {
-        address tokenIn_ = path_.getFirstToken();
-
-        if (callerPayer_ && !isNative_) {
-            IERC20(tokenIn_).safeTransferFrom(getCallerAddress(), address(this), amountIn_);
-        }
-
         address swapV3Router_ = getSwapV3Router();
 
         if (!isNative_) {
-            IERC20(tokenIn_).approveMax(swapV3Router_);
+            IERC20(path_.getFirstToken()).approveMax(swapV3Router_);
         }
 
         ISwapRouter(swapV3Router_).exactInput{value: isNative_ ? amountIn_ : 0}(
@@ -62,7 +55,6 @@ contract UniswapV3Router is
     }
 
     function exactOutput(
-        bool callerPayer_,
         bool isNative_,
         address receiver_,
         uint256 amountOut_,
@@ -70,10 +62,6 @@ contract UniswapV3Router is
         bytes calldata path_
     ) external payable {
         address tokenIn_ = path_.getLastToken();
-
-        if (callerPayer_ && !isNative_) {
-            IERC20(tokenIn_).safeTransferFrom(getCallerAddress(), address(this), amountInMaximum_);
-        }
 
         address swapV3Router_ = getSwapV3Router();
 

@@ -1,16 +1,7 @@
 import { expect } from "chai";
 import { Reverter } from "./helpers/reverter";
 import { Builder, getBuilder } from "./utils/builder";
-import {
-  MasterRouter__factory,
-  SwapDiamond__factory,
-  SwapDiamond,
-  MasterRouter,
-  ERC721MintableBurnable,
-  ERC721MintableBurnable__factory,
-  ERC1155MintableBurnable__factory,
-  ERC1155MintableBurnable,
-} from "../generated-types/ethers";
+import { SwapDiamond, MasterRouter, ERC721MintableBurnable, ERC1155MintableBurnable } from "../generated-types/ethers";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { ethers } from "hardhat";
 import { SelectorType } from "./utils/contants";
@@ -19,11 +10,6 @@ describe("SwapDiamond", () => {
   const reverter = new Reverter();
 
   let builder: Builder;
-
-  let SwapDiamondFactory: SwapDiamond__factory;
-  let MasterRouterFactory: MasterRouter__factory;
-  let ERC721MintableBurnableFactory: ERC721MintableBurnable__factory;
-  let ERC1155MintableBurnableFactory: ERC1155MintableBurnable__factory;
 
   let OWNER: SignerWithAddress;
 
@@ -37,18 +23,18 @@ describe("SwapDiamond", () => {
 
     [OWNER] = await ethers.getSigners();
 
-    SwapDiamondFactory = await ethers.getContractFactory("SwapDiamond");
-    MasterRouterFactory = await ethers.getContractFactory("MasterRouter");
-    ERC721MintableBurnableFactory = await ethers.getContractFactory("ERC721MintableBurnable");
-    ERC1155MintableBurnableFactory = await ethers.getContractFactory("ERC1155MintableBurnable");
+    const SwapDiamond = await ethers.getContractFactory("SwapDiamond");
+    const MasterRouter = await ethers.getContractFactory("MasterRouter");
+    const ERC721MintableBurnable = await ethers.getContractFactory("ERC721MintableBurnable");
+    const ERC1155MintableBurnable = await ethers.getContractFactory("ERC1155MintableBurnable");
 
-    diamond = await SwapDiamondFactory.deploy();
-    master = await MasterRouterFactory.deploy();
+    diamond = await SwapDiamond.deploy();
+    master = await MasterRouter.deploy();
 
-    erc721 = await ERC721MintableBurnableFactory.deploy("ERC721Mock", "ERC721Mock", OWNER.address, "");
+    erc721 = await ERC721MintableBurnable.deploy("ERC721Mock", "ERC721Mock", OWNER.address, "");
     await erc721.mintTo(OWNER.address, 1, "");
 
-    erc1155 = await ERC1155MintableBurnableFactory.deploy(OWNER.address, "");
+    erc1155 = await ERC1155MintableBurnable.deploy(OWNER.address, "");
     await erc1155.mintTo(OWNER.address, 1, 1, "");
     await erc1155.mintTo(OWNER.address, 2, 2, "");
 

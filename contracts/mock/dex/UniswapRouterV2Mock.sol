@@ -3,7 +3,7 @@ pragma solidity ^0.8.9;
 
 import "./AbstractSwapRouterMock.sol";
 
-contract UniswapRouterV2Mock is AbstractSwapRouterMock {
+contract UniswapV2RouterMock is AbstractSwapRouterMock {
     constructor(address weth9_) AbstractSwapRouterMock(weth9_) {}
 
     function swapExactTokensForTokens(

@@ -27,7 +27,6 @@ contract MasterRouter is
     struct Payload {
         uint256 command;
         bool skipRevert;
-        bool callerPayer;
         bytes data;
     }
 
@@ -45,11 +44,21 @@ contract MasterRouter is
             "MasterRouter: invalid command"
         );
 
-        (bool ok_, ) = getFacetBySelector(funcSelector_).delegatecall(
+        (bool ok_, bytes memory data_) = getFacetBySelector(funcSelector_).delegatecall(
             abi.encodePacked(funcSelector_, payload_.data)
         );
 
-        require(ok_ || payload_.skipRevert, "MasterRouter: command reverted");
+        if (!ok_ && !payload_.skipRevert) {
+            if (data_.length < 68) {
+                revert("MasterRouter: command reverted silently");
+            } else {
+                assembly {
+                    data_ := add(data_, 0x04)
+                }
+
+                revert(string(abi.encodePacked("MasterRouter: ", abi.decode(data_, (string)))));
+            }
+        }
     }
 
     function _getSelector(uint256 command_) internal pure returns (bytes4 funcSelector_) {
@@ -93,6 +102,12 @@ contract MasterRouter is
             transferSelector_ = TransferRouter.transferERC1155.selector;
         } else if (command_ == Commands.TRANSFER_NATIVE) {
             transferSelector_ = TransferRouter.transferNative.selector;
+        } else if (command_ == Commands.TRANSFER_FROM_ERC20) {
+            transferSelector_ = TransferRouter.transferFromERC20.selector;
+        } else if (command_ == Commands.TRANSFER_FROM_ERC721) {
+            transferSelector_ = TransferRouter.transferFromERC721.selector;
+        } else if (command_ == Commands.TRANSFER_FROM_ERC1155) {
+            transferSelector_ = TransferRouter.transferFromERC1155.selector;
         }
     }
 

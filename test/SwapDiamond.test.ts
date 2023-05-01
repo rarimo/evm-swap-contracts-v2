@@ -87,7 +87,6 @@ describe("SwapDiamond", async () => {
         SelectorType.SwapDiamond,
       ]
     );
-
     await diamond["addFacet(address,bytes4[],uint8[])"](
       bridgeRouter.address,
       [
@@ -105,13 +104,11 @@ describe("SwapDiamond", async () => {
         SelectorType.MasterRouter,
       ]
     );
-
     await diamond["addFacet(address,bytes4[],uint8[])"](
       multicallRouter.address,
       [builder("multicall").selector],
       [SelectorType.MasterRouter]
     );
-
     await diamond["addFacet(address,bytes4[],uint8[])"](
       traderJoeRouter.address,
       [
@@ -133,7 +130,6 @@ describe("SwapDiamond", async () => {
         SelectorType.MasterRouter,
       ]
     );
-
     await diamond["addFacet(address,bytes4[],uint8[])"](
       transferRouter.address,
       [
@@ -144,7 +140,6 @@ describe("SwapDiamond", async () => {
       ],
       [SelectorType.MasterRouter, SelectorType.MasterRouter, SelectorType.MasterRouter, SelectorType.MasterRouter]
     );
-
     await diamond["addFacet(address,bytes4[],uint8[])"](
       uniswapV2Router.address,
       [
@@ -166,13 +161,11 @@ describe("SwapDiamond", async () => {
         SelectorType.MasterRouter,
       ]
     );
-
     await diamond["addFacet(address,bytes4[],uint8[])"](
       uniswapV3Router.address,
       [builder("setUniswapV3RouterAddress").selector, builder("exactInput").selector, builder("exactOutput").selector],
       [SelectorType.SwapDiamond, SelectorType.MasterRouter, SelectorType.MasterRouter]
     );
-
     await diamond["addFacet(address,bytes4[],uint8[])"](
       wrapRouter.address,
       [builder("setWETH9Address").selector, builder("unwrap").selector, builder("wrap").selector],

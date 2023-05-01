@@ -28,7 +28,6 @@ contract TraderJoeRouter is
     }
 
     function swapExactTokensForTokensTJ(
-        bool callerPayer_,
         address receiver_,
         uint256 amountIn_,
         uint256 amountOutMin_,
@@ -36,15 +35,9 @@ contract TraderJoeRouter is
     ) external payable {
         require(path_.length >= 2, "TraderJoeRouter: invalid path");
 
-        address tokenIn_ = path_[0];
-
-        if (callerPayer_) {
-            IERC20(tokenIn_).safeTransferFrom(getCallerAddress(), address(this), amountIn_);
-        }
-
         address traderJoeRouter_ = getTraderJoeRouter();
 
-        IERC20(tokenIn_).approveMax(traderJoeRouter_);
+        IERC20(path_[0]).approveMax(traderJoeRouter_);
         IJoeRouter01(traderJoeRouter_).swapExactTokensForTokens(
             amountIn_,
             amountOutMin_,
@@ -55,7 +48,6 @@ contract TraderJoeRouter is
     }
 
     function swapTokensForExactTokensTJ(
-        bool callerPayer_,
         address receiver_,
         uint256 amountOut_,
         uint256 amountInMax_,
@@ -64,11 +56,6 @@ contract TraderJoeRouter is
         require(path_.length >= 2, "TraderJoeRouter: invalid path");
 
         address tokenIn_ = path_[0];
-
-        if (callerPayer_) {
-            IERC20(tokenIn_).safeTransferFrom(getCallerAddress(), address(this), amountInMax_);
-        }
-
         address traderJoeRouter_ = getTraderJoeRouter();
 
         IERC20(tokenIn_).approveMax(traderJoeRouter_);
@@ -100,7 +87,6 @@ contract TraderJoeRouter is
     }
 
     function swapTokensForExactAVAX(
-        bool callerPayer_,
         address receiver_,
         uint256 amountOut_,
         uint256 amountInMax_,
@@ -109,11 +95,6 @@ contract TraderJoeRouter is
         require(path_.length >= 2, "TraderJoeRouter: invalid path");
 
         address tokenIn_ = path_[0];
-
-        if (callerPayer_) {
-            IERC20(tokenIn_).safeTransferFrom(getCallerAddress(), address(this), amountInMax_);
-        }
-
         address traderJoeRouter_ = getTraderJoeRouter();
 
         IERC20(tokenIn_).approveMax(traderJoeRouter_);
@@ -131,7 +112,6 @@ contract TraderJoeRouter is
     }
 
     function swapExactTokensForAVAX(
-        bool callerPayer_,
         address receiver_,
         uint256 amountIn_,
         uint256 amountOutMin_,
@@ -139,15 +119,9 @@ contract TraderJoeRouter is
     ) external payable {
         require(path_.length >= 2, "TraderJoeRouter: invalid path");
 
-        address tokenIn_ = path_[0];
-
-        if (callerPayer_) {
-            IERC20(tokenIn_).safeTransferFrom(getCallerAddress(), address(this), amountIn_);
-        }
-
         address traderJoeRouter_ = getTraderJoeRouter();
 
-        IERC20(tokenIn_).approveMax(traderJoeRouter_);
+        IERC20(path_[0]).approveMax(traderJoeRouter_);
         IJoeRouter01(traderJoeRouter_).swapExactTokensForAVAX(
             amountIn_,
             amountOutMin_,

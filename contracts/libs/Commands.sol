@@ -13,6 +13,9 @@ library Commands {
     uint256 internal constant TRANSFER_ERC721 = 11;
     uint256 internal constant TRANSFER_ERC1155 = 12;
     uint256 internal constant TRANSFER_NATIVE = 13;
+    uint256 internal constant TRANSFER_FROM_ERC20 = 14;
+    uint256 internal constant TRANSFER_FROM_ERC721 = 15;
+    uint256 internal constant TRANSFER_FROM_ERC1155 = 16;
 
     /// @dev wrap facet commands: 20 <= command <= 24
     uint256 internal constant WRAP_NATIVE = 20;

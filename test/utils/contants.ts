@@ -1,4 +1,4 @@
-import { BigNumber, ContractFactory } from "ethers";
+import { BigNumber } from "ethers";
 
 export const CONTRACT_BALANCE = BigNumber.from(2).pow(255);
 
@@ -21,6 +21,9 @@ export enum Commands {
   TRANSFER_ERC721 = 11,
   TRANSFER_ERC1155 = 12,
   TRANSFER_NATIVE = 13,
+  TRANSFER_FROM_ERC20 = 14,
+  TRANSFER_FROM_ERC721 = 15,
+  TRANSFER_FROM_ERC1155 = 16,
   WRAP_NATIVE = 20,
   UNWRAP_NATIVE = 21,
   MULTICALL = 25,

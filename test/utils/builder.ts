@@ -39,6 +39,12 @@ function getCommand(selector: Selector): Commands {
       return Commands.TRANSFER_ERC1155;
     case "transferNative":
       return Commands.TRANSFER_NATIVE;
+    case "transferFromERC20":
+      return Commands.TRANSFER_FROM_ERC20;
+    case "transferFromERC721":
+      return Commands.TRANSFER_FROM_ERC721;
+    case "transferFromERC1155":
+      return Commands.TRANSFER_FROM_ERC1155;
     case "wrap":
       return Commands.WRAP_NATIVE;
     case "unwrap":
@@ -110,15 +116,16 @@ export async function getBuilder() {
 
     if (fragment.inputs.length === values.length) {
       functionData = abstractInterface.encodeFunctionData(fragment, values);
+    } else if (values.length !== 0) {
+      throw Error("wrong number of values");
     }
 
     return {
       selector: abstractInterface.getSighash(selector),
       functionData: functionData,
-      payload: (callerPayer: boolean = true, skipRevert: boolean = false) => ({
+      payload: (skipRevert: boolean = false) => ({
         command: getCommand(selector),
         skipRevert: skipRevert,
-        callerPayer: callerPayer,
         data: "0x" + functionData.slice(10),
       }),
     };
