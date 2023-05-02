@@ -8,15 +8,13 @@ import {
   ERC1155MintableBurnable,
   ERC20MintableBurnable,
   BridgeRouter,
-  BridgeRouter__factory,
-  IBridge,
   BundleExecutorImplementation,
   Bridge,
   TransferRouter,
 } from "../generated-types/ethers";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { ethers } from "hardhat";
-import { CALLER_ADDRESS, CONTRACT_BALANCE, SelectorType, THIS_ADDRESS } from "./utils/contants";
+import { CONTRACT_BALANCE, SelectorType } from "./utils/contants";
 import { wei } from "../scripts/utils/utils";
 
 describe("BridgeRouter", () => {
