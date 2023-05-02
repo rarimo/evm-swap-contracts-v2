@@ -79,7 +79,6 @@ describe("TransferRouter", () => {
     await diamond["addFacet(address,bytes4[],uint8[])"](
       transfer.address,
       [
-        builder("setWETH9Address").selector,
         builder("transferERC20").selector,
         builder("transferERC721").selector,
         builder("transferERC1155").selector,
@@ -89,7 +88,6 @@ describe("TransferRouter", () => {
         builder("transferFromERC1155").selector,
       ],
       [
-        SelectorType.SwapDiamond,
         SelectorType.MasterRouter,
         SelectorType.MasterRouter,
         SelectorType.MasterRouter,
