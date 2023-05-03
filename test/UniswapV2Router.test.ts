@@ -17,7 +17,7 @@ import { CALLER_ADDRESS, CONTRACT_BALANCE, SelectorType, THIS_ADDRESS } from "./
 import { wei } from "../scripts/utils/utils";
 import { setBalance } from "@nomicfoundation/hardhat-network-helpers";
 
-describe("TransferRouter", () => {
+describe("UniswapV2Router", () => {
   const reverter = new Reverter();
 
   let builder: Builder;
