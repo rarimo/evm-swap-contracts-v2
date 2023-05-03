@@ -17,7 +17,7 @@ contract UniswapV3RouterMock is AbstractSwapRouterMock {
     function refundETH() external payable {
         if (address(this).balance > 0) {
             (bool ok_, ) = msg.sender.call{value: address(this).balance}("");
-            require(ok_, "UniswapRouterV3Mock: failed to refund ETH");
+            require(ok_, "UniswapV3RouterMock: failed to refund ETH");
         }
     }
 
@@ -27,7 +27,7 @@ contract UniswapV3RouterMock is AbstractSwapRouterMock {
         address[] memory v2Path_ = _toV2Path(params_.path);
 
         if (msg.value > 0) {
-            require(v2Path_[0] == WRAPPED_NATIVE, "UniswapRouterV2Mock: wrong input token");
+            require(v2Path_[0] == WRAPPED_NATIVE, "UniswapV3RouterMock: wrong input token");
         }
 
         uint256[] memory amounts_ = _getAmountsOut(params_.amountIn, v2Path_);
@@ -35,7 +35,7 @@ contract UniswapV3RouterMock is AbstractSwapRouterMock {
 
         require(
             amountOut_ >= params_.amountOutMinimum,
-            "UniswapRouterV3Mock: insufficient amount out"
+            "UniswapV3RouterMock: insufficient amount out"
         );
 
         _swap(amounts_, v2Path_, params_.recipient);
@@ -49,7 +49,7 @@ contract UniswapV3RouterMock is AbstractSwapRouterMock {
         if (msg.value > 0) {
             require(
                 v2Path_[v2Path_.length - 1] == WRAPPED_NATIVE,
-                "UniswapRouterV2Mock: wrong output token"
+                "UniswapV3RouterMock: wrong output token"
             );
         }
 
@@ -58,7 +58,7 @@ contract UniswapV3RouterMock is AbstractSwapRouterMock {
 
         require(
             amounts_[0] <= params_.amountInMaximum,
-            "UniswapRouterV3Mock: excessive input amount"
+            "UniswapV3RouterMock: excessive input amount"
         );
 
         _swap(amounts_, v2Path_, params_.recipient);

@@ -17,7 +17,7 @@ contract UniswapV2RouterMock is AbstractSwapRouterMock {
 
         require(
             amounts_[amounts_.length - 1] >= amountOutMin_,
-            "UniswapRouterV2Mock: insufficient amount out"
+            "UniswapV2RouterMock: insufficient amount out"
         );
 
         _swap(amounts_, path_, receiver_);
@@ -32,7 +32,7 @@ contract UniswapV2RouterMock is AbstractSwapRouterMock {
     ) public returns (uint256[] memory amounts_) {
         amounts_ = _getAmountsIn(amountOut_, path_);
 
-        require(amounts_[0] <= amountInMax_, "UniswapRouterV2Mock: excessive input amount");
+        require(amounts_[0] <= amountInMax_, "UniswapV2RouterMock: excessive input amount");
 
         _swap(amounts_, path_, receiver_);
     }
@@ -44,11 +44,18 @@ contract UniswapV2RouterMock is AbstractSwapRouterMock {
         uint256 deadline_
     ) public payable returns (uint256[] memory amounts_) {
         require(
-            path_.length > 2 && path_[0] == WRAPPED_NATIVE,
-            "UniswapRouterV2Mock: wrong input token"
+            path_.length >= 2 && path_[0] == WRAPPED_NATIVE,
+            "UniswapV2RouterMock: wrong input token"
         );
 
-        amounts_ = swapExactTokensForTokens(msg.value, amountOutMin_, path_, receiver_, deadline_);
+        amounts_ = _getAmountsOut(msg.value, path_);
+
+        require(
+            amounts_[amounts_.length - 1] >= amountOutMin_,
+            "UniswapV2RouterMock: insufficient amount out"
+        );
+
+        _swap(amounts_, path_, receiver_);
     }
 
     function swapTokensForExactETH(
@@ -59,11 +66,15 @@ contract UniswapV2RouterMock is AbstractSwapRouterMock {
         uint256 deadline_
     ) external returns (uint256[] memory amounts_) {
         require(
-            path_.length > 2 && path_[path_.length - 1] == WRAPPED_NATIVE,
-            "UniswapRouterV2Mock: wrong output token"
+            path_.length >= 2 && path_[path_.length - 1] == WRAPPED_NATIVE,
+            "UniswapV2RouterMock: wrong output token"
         );
 
-        amounts_ = swapTokensForExactTokens(amountOut_, amountInMax_, path_, receiver_, deadline_);
+        amounts_ = _getAmountsIn(amountOut_, path_);
+
+        require(amounts_[0] <= amountInMax_, "UniswapV2RouterMock: excessive input amount");
+
+        _swap(amounts_, path_, receiver_);
     }
 
     function swapExactTokensForETH(
@@ -74,11 +85,18 @@ contract UniswapV2RouterMock is AbstractSwapRouterMock {
         uint256 deadline_
     ) external returns (uint256[] memory amounts_) {
         require(
-            path_.length > 2 && path_[0] == WRAPPED_NATIVE,
-            "UniswapRouterV2Mock: wrong input token"
+            path_.length >= 2 && path_[0] == WRAPPED_NATIVE,
+            "UniswapV2RouterMock: wrong input token"
         );
 
-        amounts_ = swapExactTokensForTokens(amountIn_, amountOutMin_, path_, receiver_, deadline_);
+        amounts_ = _getAmountsOut(amountIn_, path_);
+
+        require(
+            amounts_[amounts_.length - 1] >= amountOutMin_,
+            "UniswapV2RouterMock: insufficient amount out"
+        );
+
+        _swap(amounts_, path_, receiver_);
     }
 
     function swapETHForExactTokens(
@@ -88,10 +106,19 @@ contract UniswapV2RouterMock is AbstractSwapRouterMock {
         uint256 deadline_
     ) external payable returns (uint256[] memory amounts_) {
         require(
-            path_.length > 2 && path_[path_.length - 1] == WRAPPED_NATIVE,
-            "UniswapRouterV2Mock: wrong output token"
+            path_.length >= 2 && path_[path_.length - 1] == WRAPPED_NATIVE,
+            "UniswapV2RouterMock: wrong output token"
         );
 
-        amounts_ = swapTokensForExactTokens(amountOut_, msg.value, path_, receiver_, deadline_);
+        amounts_ = _getAmountsIn(amountOut_, path_);
+
+        require(amounts_[0] <= msg.value, "UniswapV2RouterMock: excessive input amount");
+
+        _swap(amounts_, path_, receiver_);
+
+        if (msg.value > amounts_[0]) {
+            (bool ok_, ) = msg.sender.call{value: msg.value - amounts_[0]}("");
+            require(ok_, "UniswapV2RouterMock: failed to transfer rest");
+        }
     }
 }

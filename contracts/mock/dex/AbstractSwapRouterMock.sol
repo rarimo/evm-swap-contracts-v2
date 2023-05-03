@@ -34,16 +34,16 @@ abstract contract AbstractSwapRouterMock {
     }
 
     function _getReserves(
-        address tokenA,
-        address tokenB
-    ) internal view returns (uint256 reserveA, uint256 reserveB) {
-        require(tokenA != tokenB, "UniswapRouterV2Mock: identical addresses");
+        address tokenA_,
+        address tokenB_
+    ) internal view returns (uint256 reserveA_, uint256 reserveB_) {
+        require(tokenA_ != tokenB_, "UniswapRouterV2Mock: identical addresses");
         require(
-            _pairs[tokenA][tokenB] != address(0) || _pairs[tokenB][tokenA] != address(0),
+            _pairs[tokenA_][tokenB_] != address(0) || _pairs[tokenB_][tokenA_] != address(0),
             "UniswapRouterV2Mock: pair does not exist"
         );
 
-        return (_reserves[tokenA], _reserves[tokenB]);
+        return (_reserves[tokenA_], _reserves[tokenB_]);
     }
 
     function _getAmountIn(

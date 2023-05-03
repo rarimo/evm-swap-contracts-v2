@@ -44,7 +44,7 @@ contract TraderJoeMock is AbstractSwapRouterMock {
         uint256 deadline_
     ) public payable returns (uint256[] memory amounts_) {
         require(
-            path_.length > 2 && path_[0] == WRAPPED_NATIVE,
+            path_.length >= 2 && path_[0] == WRAPPED_NATIVE,
             "TraderJoeMock: wrong input token"
         );
 
@@ -59,7 +59,7 @@ contract TraderJoeMock is AbstractSwapRouterMock {
         uint256 deadline_
     ) external returns (uint256[] memory amounts_) {
         require(
-            path_.length > 2 && path_[path_.length - 1] == WRAPPED_NATIVE,
+            path_.length >= 2 && path_[path_.length - 1] == WRAPPED_NATIVE,
             "TraderJoeMock: wrong output token"
         );
 
@@ -74,7 +74,7 @@ contract TraderJoeMock is AbstractSwapRouterMock {
         uint256 deadline_
     ) external returns (uint256[] memory amounts_) {
         require(
-            path_.length > 2 && path_[0] == WRAPPED_NATIVE,
+            path_.length >= 2 && path_[0] == WRAPPED_NATIVE,
             "TraderJoeMock: wrong input token"
         );
 
@@ -88,10 +88,15 @@ contract TraderJoeMock is AbstractSwapRouterMock {
         uint256 deadline_
     ) external payable returns (uint256[] memory amounts_) {
         require(
-            path_.length > 2 && path_[path_.length - 1] == WRAPPED_NATIVE,
+            path_.length >= 2 && path_[path_.length - 1] == WRAPPED_NATIVE,
             "TraderJoeMock: wrong output token"
         );
 
         amounts_ = swapTokensForExactTokens(amountOut_, msg.value, path_, receiver_, deadline_);
+
+        if (msg.value > amounts_[0]) {
+            (bool ok_, ) = msg.sender.call{value: msg.value - amounts_[0]}("");
+            require(ok_, "TraderJoeMock: failed to transfer rest");
+        }
     }
 }

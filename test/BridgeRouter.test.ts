@@ -28,7 +28,6 @@ describe("BridgeRouter", () => {
 
   let OWNER: SignerWithAddress;
   let CALLER: SignerWithAddress;
-  let RECEIVER: SignerWithAddress;
 
   let diamond: SwapDiamond;
   let master: MasterRouter;
@@ -49,7 +48,7 @@ describe("BridgeRouter", () => {
   before("setup", async () => {
     builder = await getBuilder();
 
-    [OWNER, CALLER, RECEIVER] = await ethers.getSigners();
+    [OWNER, CALLER] = await ethers.getSigners();
 
     const SwapDiamond = await ethers.getContractFactory("SwapDiamond");
     const MasterRouter = await ethers.getContractFactory("MasterRouter");
@@ -94,13 +93,8 @@ describe("BridgeRouter", () => {
 
     await diamond["addFacet(address,bytes4[],uint8[])"](
       master.address,
-      [
-        builder("make").selector,
-        builder("onERC721Received").selector,
-        builder("onERC1155BatchReceived").selector,
-        builder("getCallerAddress").selector,
-      ],
-      [SelectorType.SwapDiamond, SelectorType.SwapDiamond, SelectorType.SwapDiamond, SelectorType.SwapDiamond]
+      [builder("make").selector, builder("onERC721Received").selector, builder("onERC1155BatchReceived").selector],
+      [SelectorType.SwapDiamond, SelectorType.SwapDiamond, SelectorType.SwapDiamond]
     );
     await diamond["addFacet(address,bytes4[],uint8[])"](
       transfer.address,
