@@ -30,15 +30,15 @@ contract UniswapV3RouterMock is AbstractSwapRouterMock {
             require(v2Path_[0] == WRAPPED_NATIVE, "UniswapV3RouterMock: wrong input token");
         }
 
-        uint256[] memory amounts_ = _getAmountsOut(params_.amountIn, v2Path_);
-        amountOut_ = amounts_[amounts_.length - 1];
-
-        require(
-            amountOut_ >= params_.amountOutMinimum,
-            "UniswapV3RouterMock: insufficient amount out"
+        uint256[] memory amounts_ = _exactIn(
+            params_.amountIn,
+            params_.amountOutMinimum,
+            v2Path_,
+            params_.recipient,
+            false
         );
 
-        _swap(amounts_, v2Path_, params_.recipient);
+        return amounts_[amounts_.length - 1];
     }
 
     function exactOutput(
@@ -53,15 +53,13 @@ contract UniswapV3RouterMock is AbstractSwapRouterMock {
             );
         }
 
-        uint256[] memory amounts_ = _getAmountsIn(params_.amountOut, v2Path_);
-        amountIn_ = amounts_[0];
-
-        require(
-            amounts_[0] <= params_.amountInMaximum,
-            "UniswapV3RouterMock: excessive input amount"
-        );
-
-        _swap(amounts_, v2Path_, params_.recipient);
+        amountIn_ = _exactOut(
+            params_.amountOut,
+            params_.amountInMaximum,
+            v2Path_,
+            params_.recipient,
+            false
+        )[0];
     }
 
     function _toV2Path(bytes calldata path_) internal pure returns (address[] memory v2Path_) {

@@ -47,20 +47,20 @@ describe("WrapRouter", () => {
     );
     await diamond["addFacet(address,bytes4[],uint8[])"](
       wrap.address,
-      [builder("setWETH9Address").selector, builder("wrap").selector, builder("unwrap").selector],
+      [builder("setWrappedNativeAddress").selector, builder("wrap").selector, builder("unwrap").selector],
       [SelectorType.SwapDiamond, SelectorType.MasterRouter, SelectorType.MasterRouter]
     );
 
-    await wrapProxy.setWETH9Address(weth9.address);
+    await wrapProxy.setWrappedNativeAddress(weth9.address);
 
     await reverter.snapshot();
   });
 
   afterEach(reverter.revert);
 
-  describe("#setWETH9Address", () => {
+  describe("#setWrappedNativeAddress", () => {
     it("should not set if caller is not the owner", async () => {
-      await expect(wrapProxy.connect(CALLER).setWETH9Address(weth9.address)).to.be.revertedWith(
+      await expect(wrapProxy.connect(CALLER).setWrappedNativeAddress(weth9.address)).to.be.revertedWith(
         "ODStorage: not an owner"
       );
     });

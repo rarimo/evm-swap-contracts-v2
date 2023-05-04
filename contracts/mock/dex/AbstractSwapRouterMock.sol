@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+
+import "../../interfaces/tokens/WrappedNative.sol";
 
 abstract contract AbstractSwapRouterMock {
     using SafeERC20 for IERC20;
@@ -77,7 +78,7 @@ abstract contract AbstractSwapRouterMock {
         amounts_ = new uint256[](path_.length);
         amounts_[0] = amountIn_;
 
-        for (uint256 i; i < path_.length - 1; ++i) {
+        for (uint256 i = 0; i < path_.length - 1; ++i) {
             (uint256 reserveIn_, uint256 reserveOut_) = _getReserves(path_[i], path_[i + 1]);
             amounts_[i + 1] = _getAmountOut(amounts_[i], reserveIn_, reserveOut_);
         }
@@ -98,34 +99,62 @@ abstract contract AbstractSwapRouterMock {
         }
     }
 
-    function _swap(uint256[] memory amounts_, address[] memory path_, address receiver_) internal {
-        (address tokenIn_, address tokenOut_) = (path_[0], path_[path_.length - 1]);
+    function _exactIn(
+        uint256 amountIn_,
+        uint256 amountOutMin_,
+        address[] memory path_,
+        address receiver_,
+        bool toNative_
+    ) internal returns (uint256[] memory amounts_) {
+        amounts_ = _getAmountsOut(amountIn_, path_);
 
-        if (tokenIn_ == WRAPPED_NATIVE) {
-            (bool ok_, ) = WRAPPED_NATIVE.call{value: msg.value}(
-                abi.encodeWithSignature("deposit()")
-            );
-            require(ok_, "AbstractSwapRouterMock: failed to deposit");
+        require(
+            amounts_[amounts_.length - 1] >= amountOutMin_,
+            "AbstractSwapRouterMock: insufficient amount out"
+        );
+
+        _swap(amounts_, path_, receiver_, toNative_);
+    }
+
+    function _exactOut(
+        uint256 amountOut_,
+        uint256 amountInMax_,
+        address[] memory path_,
+        address receiver_,
+        bool toNative_
+    ) internal returns (uint256[] memory amounts_) {
+        amounts_ = _getAmountsIn(amountOut_, path_);
+
+        require(amounts_[0] <= amountInMax_, "AbstractSwapRouterMock: excessive input amount");
+
+        _swap(amounts_, path_, receiver_, toNative_);
+    }
+
+    function _swap(
+        uint256[] memory amounts_,
+        address[] memory path_,
+        address receiver_,
+        bool toNative_
+    ) internal {
+        (address tokenIn_, address tokenOut_) = (path_[0], path_[path_.length - 1]);
+        (uint256 amountIn_, uint256 amountOut_) = (amounts_[0], amounts_[amounts_.length - 1]);
+
+        if (tokenIn_ != WRAPPED_NATIVE || msg.value == 0) {
+            IERC20(tokenIn_).safeTransferFrom(msg.sender, address(this), amountIn_);
         } else {
-            IERC20(tokenIn_).safeTransferFrom(msg.sender, address(this), amounts_[0]);
+            WrappedNative(WRAPPED_NATIVE).deposit{value: amountIn_}();
         }
 
-        uint256 amountOut_ = amounts_[amounts_.length - 1];
+        if (tokenOut_ == WRAPPED_NATIVE && toNative_) {
+            WrappedNative(WRAPPED_NATIVE).withdraw(amountOut_);
 
-        if (tokenOut_ == WRAPPED_NATIVE) {
-            (bool ok_, ) = WRAPPED_NATIVE.call(
-                abi.encodeWithSignature("withdraw(uint256)", amountOut_)
-            );
-            require(ok_, "AbstractSwapRouterMock: failed to withdraw");
-
-            (ok_, ) = receiver_.call{value: amountOut_}("");
-            require(ok_, "AbstractSwapRouterMock: failed to transfer");
+            (bool ok_, ) = receiver_.call{value: amountOut_}("");
+            require(ok_, "AbstractSwapRouterMock: failed to transfer native");
         } else {
             IERC20(tokenOut_).safeTransfer(receiver_, amountOut_);
         }
 
-        for (uint256 i = 0; i < path_.length; ++i) {
-            _reserves[path_[i]] = IERC20(path_[i]).balanceOf(address(this));
-        }
+        _reserves[tokenIn_] = IERC20(tokenIn_).balanceOf(address(this));
+        _reserves[tokenOut_] = IERC20(tokenOut_).balanceOf(address(this));
     }
 }

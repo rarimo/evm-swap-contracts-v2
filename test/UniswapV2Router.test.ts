@@ -4,7 +4,6 @@ import { Builder, getBuilder } from "./utils/builder";
 import {
   SwapDiamond,
   MasterRouter,
-  ERC20MintableBurnable,
   TransferRouter,
   WETH9Mock,
   UniswapV2Router,
@@ -13,8 +12,8 @@ import {
 } from "../generated-types/ethers";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { ethers } from "hardhat";
-import { CALLER_ADDRESS, CONTRACT_BALANCE, SelectorType, THIS_ADDRESS } from "./utils/contants";
-import { wei } from "../scripts/utils/utils";
+import { CALLER_ADDRESS, SelectorType, THIS_ADDRESS } from "./utils/contants";
+import { wei, weiBTC, weiUSDT } from "../scripts/utils/utils";
 import { setBalance } from "@nomicfoundation/hardhat-network-helpers";
 
 describe("UniswapV2Router", () => {
@@ -65,23 +64,23 @@ describe("UniswapV2Router", () => {
     };
     uniswapV2Mock = await UniswapV2RouterMock.deploy(tokens.WETH.address);
 
-    await setBalance(CALLER.address, wei("1000000000001"));
+    await setBalance(CALLER.address, wei("100000000"));
 
-    await tokens.WETH.connect(CALLER).deposit({ value: wei("1000000000000") });
-    await tokens.USDT.mint(CALLER.address, wei("1000000000000"));
-    await tokens.BTC.mint(CALLER.address, wei("1000000000000"));
+    await tokens.WETH.connect(CALLER).deposit({ value: wei(34000 * 2) });
+    await tokens.BTC.mint(CALLER.address, weiBTC(1700 * 2));
+    await tokens.USDT.mint(CALLER.address, weiUSDT(34000 * 1700 * 2));
 
-    await tokens.WETH.connect(CALLER).approve(diamond.address, wei("1000000000000"));
-    await tokens.USDT.connect(CALLER).approve(diamond.address, wei("1000000000000"));
-    await tokens.BTC.connect(CALLER).approve(diamond.address, wei("1000000000000"));
+    await tokens.WETH.connect(CALLER).approve(diamond.address, wei("34000"));
+    await tokens.BTC.connect(CALLER).approve(diamond.address, weiBTC("1700"));
+    await tokens.USDT.connect(CALLER).approve(diamond.address, weiUSDT(34000 * 1700));
 
-    await tokens.WETH.connect(CALLER).approve(uniswapV2Mock.address, wei("1000000000000"));
-    await tokens.USDT.connect(CALLER).approve(uniswapV2Mock.address, wei("1000000000000"));
-    await tokens.BTC.connect(CALLER).approve(uniswapV2Mock.address, wei("1000000000000"));
+    await tokens.WETH.connect(CALLER).approve(uniswapV2Mock.address, wei("34000"));
+    await tokens.BTC.connect(CALLER).approve(uniswapV2Mock.address, weiBTC("1700"));
+    await tokens.USDT.connect(CALLER).approve(uniswapV2Mock.address, weiUSDT(34000 * 1700));
 
-    await uniswapV2Mock.connect(CALLER).setReserve(tokens.WETH.address, wei("1000") * 34000n);
-    await uniswapV2Mock.connect(CALLER).setReserve(tokens.BTC.address, wei("1000", 8) * 1700n);
-    await uniswapV2Mock.connect(CALLER).setReserve(tokens.USDT.address, wei("1000", 6) * 34000n * 1700n);
+    await uniswapV2Mock.connect(CALLER).setReserve(tokens.WETH.address, wei("34000"));
+    await uniswapV2Mock.connect(CALLER).setReserve(tokens.BTC.address, weiBTC("1700"));
+    await uniswapV2Mock.connect(CALLER).setReserve(tokens.USDT.address, weiUSDT(34000 * 1700));
 
     await uniswapV2Mock.enablePair(tokens.WETH.address, tokens.USDT.address);
     await uniswapV2Mock.enablePair(tokens.BTC.address, tokens.USDT.address);
@@ -133,53 +132,53 @@ describe("UniswapV2Router", () => {
     });
   });
 
-  describe.only("#swapExactTokensForTokensV2", () => {
+  describe("#swapExactTokensForTokensV2", () => {
     it("should swap exact tokens for tokens (arbitrary receiver)", async () => {
       const tx = masterProxy
         .connect(CALLER)
         .make([
-          builder("transferFromERC20", [tokens.USDT.address, wei("34000", 8)]).payload(),
+          builder("transferFromERC20", [tokens.USDT.address, weiUSDT("34000")]).payload(),
           builder("swapExactTokensForTokensV2", [
             RECEIVER.address,
-            wei("34000", 6),
-            wei("1", 8),
+            weiUSDT("34000"),
+            weiBTC("1"),
             [tokens.USDT.address, tokens.BTC.address],
           ]).payload(),
         ]);
 
-      await expect(tx).changeTokenBalance(tokens.BTC, RECEIVER, wei("1", 8));
+      await expect(tx).changeTokenBalance(tokens.BTC, RECEIVER, weiBTC("1"));
     });
 
     it("should swap exact tokens for tokens (CALLER_ADDRESS receiver)", async () => {
       const tx = masterProxy
         .connect(CALLER)
         .make([
-          builder("transferFromERC20", [tokens.USDT.address, wei("34000", 8)]).payload(),
+          builder("transferFromERC20", [tokens.USDT.address, weiUSDT("1700")]).payload(),
           builder("swapExactTokensForTokensV2", [
             CALLER_ADDRESS,
-            wei("34000", 6),
-            wei("1", 8),
-            [tokens.USDT.address, tokens.BTC.address],
+            weiUSDT("1700"),
+            wei("1"),
+            [tokens.USDT.address, tokens.WETH.address],
           ]).payload(),
         ]);
 
-      await expect(tx).changeTokenBalance(tokens.BTC, CALLER, wei("1", 8));
+      await expect(tx).changeTokenBalance(tokens.WETH, CALLER, wei("1"));
     });
 
     it("should swap exact tokens for tokens (THIS_ADDRESS receiver)", async () => {
       const tx = masterProxy
         .connect(CALLER)
         .make([
-          builder("transferFromERC20", [tokens.USDT.address, wei("34000", 8)]).payload(),
+          builder("transferFromERC20", [tokens.BTC.address, weiBTC("1")]).payload(),
           builder("swapExactTokensForTokensV2", [
             THIS_ADDRESS,
-            wei("34000", 6),
-            wei("1", 8),
-            [tokens.USDT.address, tokens.BTC.address],
+            weiBTC("1"),
+            wei("20"),
+            [tokens.BTC.address, tokens.USDT.address, tokens.WETH.address],
           ]).payload(),
         ]);
 
-      await expect(tx).changeTokenBalance(tokens.BTC, diamond, wei("1", 8));
+      await expect(tx).changeTokenBalance(tokens.WETH, diamond, wei("20"));
     });
   });
 

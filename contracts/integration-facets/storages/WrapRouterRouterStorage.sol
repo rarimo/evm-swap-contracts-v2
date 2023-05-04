@@ -6,11 +6,11 @@ contract WrapRouterStorage {
         keccak256("diamond.standard.wraprouter.storage");
 
     struct WRStorage {
-        address weth9;
+        address wrappedNative;
     }
 
-    function getWETH9Address() public view returns (address weth9_) {
-        return _getWrapRouterStorage().weth9;
+    function getWrappedNativeAddress() public view returns (address wrappedNative_) {
+        return _getWrapRouterStorage().wrappedNative;
     }
 
     function _getWrapRouterStorage() internal pure returns (WRStorage storage _ds) {

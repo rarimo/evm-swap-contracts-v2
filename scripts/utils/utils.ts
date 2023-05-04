@@ -9,6 +9,14 @@ export function wei(value: string | number | bigint, decimal: number = 18): bigi
   return ethers.utils.parseUnits(value as string, decimal).toBigInt();
 }
 
+export function weiBTC(value: string | number | bigint): bigint {
+  return wei(value, 8);
+}
+
+export function weiUSDT(value: string | number | bigint): bigint {
+  return wei(value, 6);
+}
+
 export function fromWei(value: string | number | bigint, decimal: number = 18) {
   return BigNumber.from(value).div(BigNumber.from(10).pow(decimal));
 }

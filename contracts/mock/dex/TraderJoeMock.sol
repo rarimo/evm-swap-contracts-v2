@@ -13,14 +13,7 @@ contract TraderJoeMock is AbstractSwapRouterMock {
         address receiver_,
         uint256
     ) public returns (uint256[] memory amounts_) {
-        amounts_ = _getAmountsOut(amountIn_, path_);
-
-        require(
-            amounts_[amounts_.length - 1] >= amountOutMin_,
-            "TraderJoeMock: insufficient amount out"
-        );
-
-        _swap(amounts_, path_, receiver_);
+        amounts_ = _exactIn(amountIn_, amountOutMin_, path_, receiver_, false);
     }
 
     function swapTokensForExactTokens(
@@ -30,25 +23,21 @@ contract TraderJoeMock is AbstractSwapRouterMock {
         address receiver_,
         uint256
     ) public returns (uint256[] memory amounts_) {
-        amounts_ = _getAmountsIn(amountOut_, path_);
-
-        require(amounts_[0] <= amountInMax_, "TraderJoeMock: excessive input amount");
-
-        _swap(amounts_, path_, receiver_);
+        amounts_ = _exactOut(amountOut_, amountInMax_, path_, receiver_, false);
     }
 
     function swapExactAVAXForTokens(
         uint256 amountOutMin_,
         address[] calldata path_,
         address receiver_,
-        uint256 deadline_
+        uint256
     ) public payable returns (uint256[] memory amounts_) {
         require(
             path_.length >= 2 && path_[0] == WRAPPED_NATIVE,
             "TraderJoeMock: wrong input token"
         );
 
-        amounts_ = swapExactTokensForTokens(msg.value, amountOutMin_, path_, receiver_, deadline_);
+        amounts_ = _exactIn(msg.value, amountOutMin_, path_, receiver_, false);
     }
 
     function swapTokensForExactAVAX(
@@ -56,14 +45,14 @@ contract TraderJoeMock is AbstractSwapRouterMock {
         uint256 amountInMax_,
         address[] calldata path_,
         address receiver_,
-        uint256 deadline_
+        uint256
     ) external returns (uint256[] memory amounts_) {
         require(
             path_.length >= 2 && path_[path_.length - 1] == WRAPPED_NATIVE,
             "TraderJoeMock: wrong output token"
         );
 
-        amounts_ = swapTokensForExactTokens(amountOut_, amountInMax_, path_, receiver_, deadline_);
+        amounts_ = _exactOut(amountOut_, amountInMax_, path_, receiver_, true);
     }
 
     function swapExactTokensForAVAX(
@@ -71,28 +60,28 @@ contract TraderJoeMock is AbstractSwapRouterMock {
         uint256 amountOutMin_,
         address[] calldata path_,
         address receiver_,
-        uint256 deadline_
+        uint256
     ) external returns (uint256[] memory amounts_) {
         require(
             path_.length >= 2 && path_[0] == WRAPPED_NATIVE,
             "TraderJoeMock: wrong input token"
         );
 
-        amounts_ = swapExactTokensForTokens(amountIn_, amountOutMin_, path_, receiver_, deadline_);
+        amounts_ = _exactIn(amountIn_, amountOutMin_, path_, receiver_, true);
     }
 
     function swapAVAXForExactTokens(
         uint256 amountOut_,
         address[] calldata path_,
         address receiver_,
-        uint256 deadline_
+        uint256
     ) external payable returns (uint256[] memory amounts_) {
         require(
             path_.length >= 2 && path_[path_.length - 1] == WRAPPED_NATIVE,
             "TraderJoeMock: wrong output token"
         );
 
-        amounts_ = swapTokensForExactTokens(amountOut_, msg.value, path_, receiver_, deadline_);
+        amounts_ = _exactOut(amountOut_, msg.value, path_, receiver_, true);
 
         if (msg.value > amounts_[0]) {
             (bool ok_, ) = msg.sender.call{value: msg.value - amounts_[0]}("");
