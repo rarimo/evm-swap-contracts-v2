@@ -1,7 +1,13 @@
 import { expect } from "chai";
 import { Reverter } from "./helpers/reverter";
 import { Builder, getBuilder } from "./utils/builder";
-import { SwapDiamond, MasterRouter, ERC721MintableBurnable, ERC1155MintableBurnable } from "../generated-types/ethers";
+import {
+  SwapDiamond,
+  MasterRouter,
+  ERC721MintableBurnable,
+  ERC1155MintableBurnable,
+  MulticallRouter,
+} from "../generated-types/ethers";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { ethers } from "hardhat";
 import { SelectorType } from "./utils/contants";
@@ -12,24 +18,30 @@ describe("MasterRouter", () => {
   let builder: Builder;
 
   let OWNER: SignerWithAddress;
+  let CALLER: SignerWithAddress;
 
   let diamond: SwapDiamond;
   let master: MasterRouter;
+  let masterProxy: MasterRouter;
+  let multicall: MulticallRouter;
   let erc721: ERC721MintableBurnable;
   let erc1155: ERC1155MintableBurnable;
 
   before("setup", async () => {
     builder = await getBuilder();
 
-    [OWNER] = await ethers.getSigners();
+    [OWNER, CALLER] = await ethers.getSigners();
 
     const SwapDiamond = await ethers.getContractFactory("SwapDiamond");
     const MasterRouter = await ethers.getContractFactory("MasterRouter");
+    const MulticallRouter = await ethers.getContractFactory("MulticallRouter");
     const ERC721MintableBurnable = await ethers.getContractFactory("ERC721MintableBurnable");
     const ERC1155MintableBurnable = await ethers.getContractFactory("ERC1155MintableBurnable");
 
     diamond = await SwapDiamond.deploy();
     master = await MasterRouter.deploy();
+    masterProxy = await MasterRouter.attach(diamond.address);
+    multicall = await MulticallRouter.deploy();
 
     erc721 = await ERC721MintableBurnable.deploy("ERC721Mock", "ERC721Mock", OWNER.address, "");
     await erc721.mintTo(OWNER.address, 1, "");
@@ -38,10 +50,32 @@ describe("MasterRouter", () => {
     await erc1155.mintTo(OWNER.address, 1, 1, "");
     await erc1155.mintTo(OWNER.address, 2, 2, "");
 
+    await diamond["addFacet(address,bytes4[],uint8[])"](
+      master.address,
+      [builder("make").selector],
+      [SelectorType.SwapDiamond]
+    );
+
+    await diamond["addFacet(address,bytes4[],uint8[])"](
+      multicall.address,
+      [builder("multicall").selector],
+      [SelectorType.MasterRouter]
+    );
+
     await reverter.snapshot();
   });
 
   afterEach(reverter.revert);
+
+  describe("#make", async () => {
+    it("should revert if reentrancy", async () => {
+      const tx = masterProxy
+        .connect(CALLER)
+        .make([builder("multicall", [[diamond.address], [builder("make", [[]]).functionData], [0]]).payload()]);
+
+      await expect(tx).to.be.revertedWith("MasterRouter: MulticallRouter: MasterRouterStorage: new caller");
+    });
+  });
 
   describe("#onERC721Received", () => {
     it("should not safeTransferFrom if selector is not added", async () => {

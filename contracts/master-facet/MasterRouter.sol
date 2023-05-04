@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol";
 import "@dlsl/dev-modules/diamond/DiamondStorage.sol";
 
 import "../libs/Commands.sol";
+import "../libs/ErrorHelper.sol";
 import "./MasterRouterStorage.sol";
 import "../SwapDiamondStorage.sol";
 import "../integration-facets/routers/BridgeRouter.sol";
@@ -24,6 +25,8 @@ contract MasterRouter is
     ERC721Holder,
     ERC1155Holder
 {
+    using ErrorHelper for *;
+
     struct Payload {
         uint256 command;
         bool skipRevert;
@@ -48,17 +51,7 @@ contract MasterRouter is
             abi.encodePacked(funcSelector_, payload_.data)
         );
 
-        if (!ok_ && !payload_.skipRevert) {
-            if (data_.length < 68) {
-                revert("MasterRouter: command reverted silently");
-            } else {
-                assembly {
-                    data_ := add(data_, 0x04)
-                }
-
-                revert(string(abi.encodePacked("MasterRouter: ", abi.decode(data_, (string)))));
-            }
-        }
+        require(ok_ || payload_.skipRevert, data_.toStringReason().wrap("MasterRouter"));
     }
 
     function _getSelector(uint256 command_) internal pure returns (bytes4 funcSelector_) {

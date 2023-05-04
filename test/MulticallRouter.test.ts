@@ -102,7 +102,7 @@ describe("WrapRouter", () => {
         masterProxy
           .connect(CALLER)
           .make([builder("multicall", [[multicall.address], ["0x"], [wei("1")]]).payload()], { value: wei("1") })
-      ).to.be.revertedWith("MasterRouter: MulticallRouter: failed to call");
+      ).to.be.revertedWith("MasterRouter: MulticallRouter: ErrorHelper: command reverted silently");
     });
   });
 });
