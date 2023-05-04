@@ -11,6 +11,7 @@ import {
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { ethers } from "hardhat";
 import { SelectorType } from "./utils/contants";
+import { ZERO_ADDR } from "../scripts/utils/constants";
 
 describe("MasterRouter", () => {
   const reverter = new Reverter();
@@ -74,6 +75,53 @@ describe("MasterRouter", () => {
         .make([builder("multicall", [[diamond.address], [builder("make", [[]]).functionData], [0]]).payload()]);
 
       await expect(tx).to.be.revertedWith("MasterRouter: MulticallRouter: MasterRouterStorage: new caller");
+    });
+
+    it("should not revert if skipRevert flag", async () => {
+      const tx = masterProxy
+        .connect(CALLER)
+        .make([builder("multicall", [[diamond.address], [builder("make", [[]]).functionData], [0]]).payload(true)]);
+
+      await expect(tx).not.to.be.reverted;
+    });
+
+    it("should revert if wrong selector type", async () => {
+      const tx = masterProxy.connect(CALLER).make([builder("make", []).payload()]);
+
+      await expect(tx).to.be.revertedWith("MasterRouter: invalid command");
+    });
+
+    it("should revert if nonexistent selector", async () => {
+      const tx = masterProxy.connect(CALLER).make([builder("transferFromERC20", [ZERO_ADDR, 0]).payload()]);
+
+      await expect(tx).to.be.revertedWith("MasterRouter: invalid command");
+    });
+
+    it("should revert if invalid command", async () => {
+      await expect(masterProxy.make([{ command: 81, skipRevert: false, data: "0x" }])).to.be.revertedWith(
+        "MasterRouter: invalid command"
+      );
+      await expect(masterProxy.make([{ command: 9, skipRevert: false, data: "0x" }])).to.be.revertedWith(
+        "MasterRouter: invalid command"
+      );
+      await expect(masterProxy.make([{ command: 19, skipRevert: false, data: "0x" }])).to.be.revertedWith(
+        "MasterRouter: invalid command"
+      );
+      await expect(masterProxy.make([{ command: 24, skipRevert: false, data: "0x" }])).to.be.revertedWith(
+        "MasterRouter: invalid command"
+      );
+      await expect(masterProxy.make([{ command: 29, skipRevert: false, data: "0x" }])).to.be.revertedWith(
+        "MasterRouter: invalid command"
+      );
+      await expect(masterProxy.make([{ command: 59, skipRevert: false, data: "0x" }])).to.be.revertedWith(
+        "MasterRouter: invalid command"
+      );
+      await expect(masterProxy.make([{ command: 69, skipRevert: false, data: "0x" }])).to.be.revertedWith(
+        "MasterRouter: invalid command"
+      );
+      await expect(masterProxy.make([{ command: 79, skipRevert: false, data: "0x" }])).to.be.revertedWith(
+        "MasterRouter: invalid command"
+      );
     });
   });
 
