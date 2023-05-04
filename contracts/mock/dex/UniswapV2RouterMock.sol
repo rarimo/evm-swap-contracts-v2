@@ -63,8 +63,8 @@ contract UniswapV2RouterMock is AbstractSwapRouterMock {
         uint256
     ) external returns (uint256[] memory amounts_) {
         require(
-            path_.length >= 2 && path_[0] == WRAPPED_NATIVE,
-            "UniswapV2RouterMock: wrong input token"
+            path_.length >= 2 && path_[path_.length - 1] == WRAPPED_NATIVE,
+            "UniswapV2RouterMock: wrong output token"
         );
 
         amounts_ = _exactIn(amountIn_, amountOutMin_, path_, receiver_, true);
@@ -77,8 +77,8 @@ contract UniswapV2RouterMock is AbstractSwapRouterMock {
         uint256
     ) external payable returns (uint256[] memory amounts_) {
         require(
-            path_.length >= 2 && path_[path_.length - 1] == WRAPPED_NATIVE,
-            "UniswapV2RouterMock: wrong output token"
+            path_.length >= 2 && path_[0] == WRAPPED_NATIVE,
+            "UniswapV2RouterMock: wrong input token"
         );
 
         amounts_ = _exactOut(amountOut_, msg.value, path_, receiver_, true);

@@ -27,6 +27,7 @@ contract UniswapV3RouterMock is AbstractSwapRouterMock {
         address[] memory v2Path_ = _toV2Path(params_.path);
 
         if (msg.value > 0) {
+            require(msg.value == params_.amountIn, "UniswapV3RouterMock: wrong amount in");
             require(v2Path_[0] == WRAPPED_NATIVE, "UniswapV3RouterMock: wrong input token");
         }
 
@@ -47,10 +48,8 @@ contract UniswapV3RouterMock is AbstractSwapRouterMock {
         address[] memory v2Path_ = _toV2Path(params_.path).reverse();
 
         if (msg.value > 0) {
-            require(
-                v2Path_[v2Path_.length - 1] == WRAPPED_NATIVE,
-                "UniswapV3RouterMock: wrong output token"
-            );
+            require(msg.value == params_.amountInMaximum, "UniswapV3RouterMock: wrong amount in");
+            require(v2Path_[0] == WRAPPED_NATIVE, "UniswapV3RouterMock: wrong input token");
         }
 
         amountIn_ = _exactOut(
