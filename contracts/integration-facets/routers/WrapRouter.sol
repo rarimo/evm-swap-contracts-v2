@@ -4,7 +4,7 @@ pragma solidity ^0.8.9;
 import "@dlsl/dev-modules/diamond/presets/OwnableDiamond/OwnableDiamondStorage.sol";
 
 import "../../libs/Resolver.sol";
-import "../../interfaces/tokens/WrappedNative.sol";
+import "../../interfaces/tokens/IWrappedNative.sol";
 import "../../master-facet/MasterRouterStorage.sol";
 import "../storages/WrapRouterRouterStorage.sol";
 import "./TransferRouter.sol";
@@ -21,7 +21,7 @@ contract WrapRouter is OwnableDiamondStorage, WrapRouterStorage, TransferRouter 
 
         amount_ = amount_.resolve();
 
-        WrappedNative(weth9_).deposit{value: amount_}();
+        IWrappedNative(weth9_).deposit{value: amount_}();
         transferERC20(weth9_, receiver_, amount_);
     }
 
@@ -30,7 +30,7 @@ contract WrapRouter is OwnableDiamondStorage, WrapRouterStorage, TransferRouter 
 
         amount_ = amount_.resolve(IERC20(weth9_));
 
-        WrappedNative(weth9_).withdraw(amount_);
+        IWrappedNative(weth9_).withdraw(amount_);
         transferNative(receiver_, amount_);
     }
 }

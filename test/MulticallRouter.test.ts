@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { Reverter } from "./helpers/reverter";
 import { Builder, getBuilder } from "./utils/builder";
-import { MasterRouter, MulticallRouter, SwapDiamond, WETH9Mock, WrapRouter } from "../generated-types/ethers";
+import { MasterRouter, MulticallRouter, SwapDiamond, WrappedNativeMock, WrapRouter } from "../generated-types/ethers";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { ethers } from "hardhat";
 import { CALLER_ADDRESS, CONTRACT_BALANCE, SelectorType, THIS_ADDRESS } from "./utils/contants";
@@ -21,7 +21,7 @@ describe("WrapRouter", () => {
   let masterProxy: MasterRouter;
   let multicall: MulticallRouter;
   let wrap: WrapRouter;
-  let weth9: WETH9Mock;
+  let weth9: WrappedNativeMock;
 
   before("setup", async () => {
     builder = await getBuilder();
@@ -32,14 +32,14 @@ describe("WrapRouter", () => {
     const MasterRouter = await ethers.getContractFactory("MasterRouter");
     const MulticallRouter = await ethers.getContractFactory("MulticallRouter");
     const WrapRouter = await ethers.getContractFactory("WrapRouter");
-    const WETH9Mock = await ethers.getContractFactory("WETH9Mock");
+    const WrappedNativeMock = await ethers.getContractFactory("WrappedNativeMock");
 
     diamond = await SwapDiamond.deploy();
     master = await MasterRouter.deploy();
     masterProxy = await MasterRouter.attach(diamond.address);
     multicall = await MulticallRouter.deploy();
     wrap = await WrapRouter.deploy();
-    weth9 = await WETH9Mock.deploy();
+    weth9 = await WrappedNativeMock.deploy();
 
     await diamond["addFacet(address,bytes4[],uint8[])"](
       master.address,

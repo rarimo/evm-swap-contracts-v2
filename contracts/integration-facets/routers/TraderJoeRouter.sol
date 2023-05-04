@@ -9,6 +9,7 @@ import "@traderjoe-xyz/core/contracts/traderjoe/interfaces/IJoeRouter01.sol";
 
 import "../../libs/Approver.sol";
 import "../../libs/Resolver.sol";
+import "../../libs/Constants.sol";
 import "../../master-facet/MasterRouterStorage.sol";
 import "../storages/TraderJoeRouterStorage.sol";
 import "./TransferRouter.sol";
@@ -68,7 +69,7 @@ contract TraderJoeRouter is
         )[0];
 
         if (amountInMax_ > spentFundsAmount_) {
-            transferERC20(tokenIn_, receiver_, amountInMax_ - spentFundsAmount_);
+            transferERC20(tokenIn_, Constants.CALLER_ADDRESS, amountInMax_ - spentFundsAmount_);
         }
     }
 
@@ -107,7 +108,7 @@ contract TraderJoeRouter is
         )[0];
 
         if (amountInMax_ > spentFundsAmount_) {
-            transferERC20(tokenIn_, receiver_, amountInMax_ - spentFundsAmount_);
+            transferERC20(tokenIn_, Constants.CALLER_ADDRESS, amountInMax_ - spentFundsAmount_);
         }
     }
 
@@ -142,7 +143,7 @@ contract TraderJoeRouter is
         }(amountOut_, path_, receiver_.resolve(), block.timestamp)[0];
 
         if (amountInMax_ > spentFundsAmount_) {
-            transferNative(receiver_, amountInMax_ - spentFundsAmount_);
+            transferNative(Constants.CALLER_ADDRESS, amountInMax_ - spentFundsAmount_);
         }
     }
 }

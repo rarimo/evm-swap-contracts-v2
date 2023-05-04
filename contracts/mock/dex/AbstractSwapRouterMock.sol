@@ -3,7 +3,7 @@ pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
-import "../../interfaces/tokens/WrappedNative.sol";
+import "../../interfaces/tokens/IWrappedNative.sol";
 
 abstract contract AbstractSwapRouterMock {
     using SafeERC20 for IERC20;
@@ -16,6 +16,8 @@ abstract contract AbstractSwapRouterMock {
     constructor(address wrappedNative_) {
         WRAPPED_NATIVE = wrappedNative_;
     }
+
+    receive() external payable {}
 
     function setReserve(address token_, uint256 amount_) external {
         uint256 balance_ = IERC20(token_).balanceOf(address(this));
@@ -142,11 +144,11 @@ abstract contract AbstractSwapRouterMock {
         if (tokenIn_ != WRAPPED_NATIVE || msg.value == 0) {
             IERC20(tokenIn_).safeTransferFrom(msg.sender, address(this), amountIn_);
         } else {
-            WrappedNative(WRAPPED_NATIVE).deposit{value: amountIn_}();
+            IWrappedNative(WRAPPED_NATIVE).deposit{value: amountIn_}();
         }
 
         if (tokenOut_ == WRAPPED_NATIVE && toNative_) {
-            WrappedNative(WRAPPED_NATIVE).withdraw(amountOut_);
+            IWrappedNative(WRAPPED_NATIVE).withdraw(amountOut_);
 
             (bool ok_, ) = receiver_.call{value: amountOut_}("");
             require(ok_, "AbstractSwapRouterMock: failed to transfer native");

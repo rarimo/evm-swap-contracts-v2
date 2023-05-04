@@ -71,7 +71,7 @@ describe("BridgeRouter", () => {
 
     await rarimoBridge.__Bridge_init(OWNER.address, bundle.address, chainName);
 
-    erc20 = await ERC20MintableBurnable.deploy("ERC20Mock", "ERC20Mock", OWNER.address);
+    erc20 = await ERC20MintableBurnable.deploy("ERC20Mock", "ERC20Mock", 18, OWNER.address);
 
     await erc20.mintTo(CALLER.address, wei("100"));
     await erc20.connect(CALLER).approve(diamond.address, wei("100"));

@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { Reverter } from "./helpers/reverter";
 import { Builder, getBuilder } from "./utils/builder";
-import { SwapDiamond, MasterRouter, WETH9Mock, WrapRouter } from "../generated-types/ethers";
+import { SwapDiamond, MasterRouter, WrapRouter, WrappedNativeMock } from "../generated-types/ethers";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { ethers } from "hardhat";
 import { CALLER_ADDRESS, CONTRACT_BALANCE, SelectorType, THIS_ADDRESS } from "./utils/contants";
@@ -21,7 +21,7 @@ describe("WrapRouter", () => {
   let masterProxy: MasterRouter;
   let wrap: WrapRouter;
   let wrapProxy: WrapRouter;
-  let weth9: WETH9Mock;
+  let weth9: WrappedNativeMock;
 
   before("setup", async () => {
     builder = await getBuilder();
@@ -31,14 +31,14 @@ describe("WrapRouter", () => {
     const SwapDiamond = await ethers.getContractFactory("SwapDiamond");
     const MasterRouter = await ethers.getContractFactory("MasterRouter");
     const WrapRouter = await ethers.getContractFactory("WrapRouter");
-    const WETH9Mock = await ethers.getContractFactory("WETH9Mock");
+    const WrappedNativeMock = await ethers.getContractFactory("WrappedNativeMock");
 
     diamond = await SwapDiamond.deploy();
     master = await MasterRouter.deploy();
     masterProxy = await MasterRouter.attach(diamond.address);
     wrap = await WrapRouter.deploy();
     wrapProxy = await WrapRouter.attach(diamond.address);
-    weth9 = await WETH9Mock.deploy();
+    weth9 = await WrappedNativeMock.deploy();
 
     await diamond["addFacet(address,bytes4[],uint8[])"](
       master.address,

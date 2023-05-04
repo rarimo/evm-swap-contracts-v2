@@ -11,6 +11,7 @@ import "@uniswap/v3-periphery/contracts/interfaces/IPeripheryPayments.sol";
 import "../../libs/BytesHelper.sol";
 import "../../libs/Approver.sol";
 import "../../libs/Resolver.sol";
+import "../../libs/Constants.sol";
 import "../../master-facet/MasterRouterStorage.sol";
 import "../storages/UniswapV3RouterStorage.sol";
 import "./TransferRouter.sol";
@@ -81,12 +82,18 @@ contract UniswapV3Router is
             })
         );
 
-        if (isNative_) {
-            IPeripheryPayments(swapV3Router_).refundETH();
+        if (amountInMaximum_ > spentFundsAmount_) {
+            if (isNative_) {
+                IPeripheryPayments(swapV3Router_).refundETH();
 
-            transferNative(receiver_, amountInMaximum_ - spentFundsAmount_);
-        } else {
-            transferERC20(tokenIn_, receiver_, amountInMaximum_ - spentFundsAmount_);
+                transferNative(Constants.CALLER_ADDRESS, amountInMaximum_ - spentFundsAmount_);
+            } else {
+                transferERC20(
+                    tokenIn_,
+                    Constants.CALLER_ADDRESS,
+                    amountInMaximum_ - spentFundsAmount_
+                );
+            }
         }
     }
 }

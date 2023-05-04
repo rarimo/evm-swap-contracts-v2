@@ -4,7 +4,7 @@ pragma solidity ^0.8.9;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /// @title Interface for WETH9
-interface WrappedNative is IERC20 {
+interface IWrappedNative is IERC20 {
     /// @notice Deposit ether to get wrapped ether
     function deposit() external payable;
 

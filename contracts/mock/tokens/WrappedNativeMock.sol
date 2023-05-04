@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-import "../../interfaces/tokens/WrappedNative.sol";
-import "./ERC20Mock.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-contract WETH9Mock is WrappedNative, ERC20Mock {
-    constructor() ERC20Mock("WETH9Mock", "WETH9M", 18) {}
+import "../../interfaces/tokens/IWrappedNative.sol";
+
+contract WrappedNativeMock is IWrappedNative, ERC20 {
+    constructor() ERC20("WrappedNativeMock", "WNM") {}
 
     function deposit() external payable override {
         _mint(msg.sender, msg.value);
