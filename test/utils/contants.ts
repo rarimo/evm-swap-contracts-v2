@@ -5,11 +5,11 @@ export const CONTRACT_BALANCE = BigNumber.from(2).pow(255);
 export const THIS_ADDRESS = "0x0000000000000000000000000000000000000001";
 export const CALLER_ADDRESS = "0x0000000000000000000000000000000000000002";
 
-export const SelectorType = {
-  Undefined: 0,
-  SwapDiamond: 1,
-  MasterRouter: 2,
-};
+export enum SelectorType {
+  Undefined,
+  SwapDiamond,
+  MasterRouter,
+}
 
 export enum Commands {
   UNDEFINED = 0,
