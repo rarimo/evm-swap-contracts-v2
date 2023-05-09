@@ -19,11 +19,11 @@ contract MulticallRouter {
         );
 
         for (uint256 i = 0; i < targets_.length; ++i) {
-            (bool ok_, bytes memory data_) = targets_[i].resolve().call{
+            (bool ok_, bytes memory revertData_) = targets_[i].resolve().call{
                 value: values_[i].resolve()
             }(data_[i]);
 
-            require(ok_, data_.toStringReason().wrap("MulticallRouter"));
+            require(ok_, revertData_.toStringReason().wrap("MulticallRouter"));
         }
     }
 }
