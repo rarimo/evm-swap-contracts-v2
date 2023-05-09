@@ -34,7 +34,7 @@ contract UniswapV2Router is
         uint256 amountOutMin_,
         address[] calldata path_
     ) external payable {
-        require(path_.length >= 2, "UniswapV2Router: invalid path");
+        _validatePath(path_);
 
         address swapV2router_ = getSwapV2Router();
 
@@ -54,7 +54,7 @@ contract UniswapV2Router is
         uint256 amountInMax_,
         address[] calldata path_
     ) external payable {
-        require(path_.length >= 2, "UniswapV2Router: invalid path");
+        _validatePath(path_);
 
         address tokenIn_ = path_[0];
         address swapV2router_ = getSwapV2Router();
@@ -79,6 +79,8 @@ contract UniswapV2Router is
         uint256 amountOutMin_,
         address[] calldata path_
     ) external payable {
+        _validatePath(path_);
+
         IUniswapV2Router01(getSwapV2Router()).swapExactETHForTokens{value: amountIn_}(
             amountOutMin_,
             path_,
@@ -93,7 +95,7 @@ contract UniswapV2Router is
         uint256 amountInMax_,
         address[] calldata path_
     ) external payable {
-        require(path_.length >= 2, "UniswapV2Router: invalid path");
+        _validatePath(path_);
 
         address tokenIn_ = path_[0];
         address swapV2router_ = getSwapV2Router();
@@ -118,7 +120,7 @@ contract UniswapV2Router is
         uint256 amountOutMin_,
         address[] calldata path_
     ) external payable {
-        require(path_.length >= 2, "UniswapV2Router: invalid path");
+        _validatePath(path_);
 
         address swapV2router_ = getSwapV2Router();
 
@@ -138,6 +140,8 @@ contract UniswapV2Router is
         uint256 amountInMax_,
         address[] calldata path_
     ) external payable {
+        _validatePath(path_);
+
         uint256 spentFundsAmount_ = IUniswapV2Router01(getSwapV2Router()).swapETHForExactTokens{
             value: amountInMax_
         }(amountOut_, path_, receiver_.resolve(), block.timestamp)[0];
@@ -145,5 +149,9 @@ contract UniswapV2Router is
         if (amountInMax_ > spentFundsAmount_) {
             transferNative(Constants.CALLER_ADDRESS, amountInMax_ - spentFundsAmount_);
         }
+    }
+
+    function _validatePath(address[] calldata path_) internal pure {
+        require(path_.length >= 2, "UniswapV2Router: invalid path");
     }
 }

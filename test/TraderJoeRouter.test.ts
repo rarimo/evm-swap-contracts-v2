@@ -278,6 +278,16 @@ describe("TraderJoeRouter", () => {
   });
 
   describe("#swapExactAVAXForTokens", () => {
+    it("should revert if invalid path", async () => {
+      const tx = masterProxy
+        .connect(CALLER)
+        .make([builder("swapExactAVAXForTokens", [RECEIVER.address, wei("1"), weiUSDT("1700"), []]).payload()], {
+          value: wei("1"),
+        });
+
+      await expect(tx).to.be.revertedWith("MasterRouter: TraderJoeRouter: invalid path");
+    });
+
     it("should swap exact AVAX for tokens (arbitrary receiver)", async () => {
       const tx = masterProxy
         .connect(CALLER)
@@ -482,6 +492,16 @@ describe("TraderJoeRouter", () => {
   });
 
   describe("#swapAVAXForExactTokens", () => {
+    it("should revert if invalid path", async () => {
+      const tx = masterProxy
+        .connect(CALLER)
+        .make([builder("swapAVAXForExactTokens", [RECEIVER.address, weiUSDT("1700"), wei("1"), []]).payload()], {
+          value: wei("1"),
+        });
+
+      await expect(tx).to.be.revertedWith("MasterRouter: TraderJoeRouter: invalid path");
+    });
+
     it("should swap AVAX for exact tokens (arbitrary receiver)", async () => {
       const tx = masterProxy
         .connect(CALLER)

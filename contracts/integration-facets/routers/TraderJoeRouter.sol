@@ -34,7 +34,7 @@ contract TraderJoeRouter is
         uint256 amountOutMin_,
         address[] calldata path_
     ) external payable {
-        require(path_.length >= 2, "TraderJoeRouter: invalid path");
+        _validatePath(path_);
 
         address traderJoeRouter_ = getTraderJoeRouter();
 
@@ -54,7 +54,7 @@ contract TraderJoeRouter is
         uint256 amountInMax_,
         address[] calldata path_
     ) external payable {
-        require(path_.length >= 2, "TraderJoeRouter: invalid path");
+        _validatePath(path_);
 
         address tokenIn_ = path_[0];
         address traderJoeRouter_ = getTraderJoeRouter();
@@ -79,6 +79,8 @@ contract TraderJoeRouter is
         uint256 amountOutMin_,
         address[] calldata path_
     ) external payable {
+        _validatePath(path_);
+
         IJoeRouter01(getTraderJoeRouter()).swapExactAVAXForTokens{value: amountIn_}(
             amountOutMin_,
             path_,
@@ -93,7 +95,7 @@ contract TraderJoeRouter is
         uint256 amountInMax_,
         address[] calldata path_
     ) external payable {
-        require(path_.length >= 2, "TraderJoeRouter: invalid path");
+        _validatePath(path_);
 
         address tokenIn_ = path_[0];
         address traderJoeRouter_ = getTraderJoeRouter();
@@ -118,7 +120,7 @@ contract TraderJoeRouter is
         uint256 amountOutMin_,
         address[] calldata path_
     ) external payable {
-        require(path_.length >= 2, "TraderJoeRouter: invalid path");
+        _validatePath(path_);
 
         address traderJoeRouter_ = getTraderJoeRouter();
 
@@ -138,6 +140,8 @@ contract TraderJoeRouter is
         uint256 amountInMax_,
         address[] calldata path_
     ) external payable {
+        _validatePath(path_);
+
         uint256 spentFundsAmount_ = IJoeRouter01(getTraderJoeRouter()).swapAVAXForExactTokens{
             value: amountInMax_
         }(amountOut_, path_, receiver_.resolve(), block.timestamp)[0];
@@ -145,5 +149,9 @@ contract TraderJoeRouter is
         if (amountInMax_ > spentFundsAmount_) {
             transferNative(Constants.CALLER_ADDRESS, amountInMax_ - spentFundsAmount_);
         }
+    }
+
+    function _validatePath(address[] calldata path_) internal pure {
+        require(path_.length >= 2, "TraderJoeRouter: invalid path");
     }
 }

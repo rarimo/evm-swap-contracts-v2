@@ -278,6 +278,16 @@ describe("UniswapV2Router", () => {
   });
 
   describe("#swapExactETHForTokens", () => {
+    it("should revert if invalid path", async () => {
+      const tx = masterProxy
+        .connect(CALLER)
+        .make([builder("swapExactETHForTokens", [RECEIVER.address, wei("1"), weiUSDT("1700"), []]).payload()], {
+          value: wei("1"),
+        });
+
+      await expect(tx).to.be.revertedWith("MasterRouter: UniswapV2Router: invalid path");
+    });
+
     it("should swap exact ETH for tokens (arbitrary receiver)", async () => {
       const tx = masterProxy
         .connect(CALLER)
@@ -482,6 +492,16 @@ describe("UniswapV2Router", () => {
   });
 
   describe("#swapETHForExactTokens", () => {
+    it("should revert if invalid path", async () => {
+      const tx = masterProxy
+        .connect(CALLER)
+        .make([builder("swapETHForExactTokens", [RECEIVER.address, weiUSDT("1700"), wei("1"), []]).payload()], {
+          value: wei("1"),
+        });
+
+      await expect(tx).to.be.revertedWith("MasterRouter: UniswapV2Router: invalid path");
+    });
+
     it("should swap ETH for exact tokens (arbitrary receiver)", async () => {
       const tx = masterProxy
         .connect(CALLER)
