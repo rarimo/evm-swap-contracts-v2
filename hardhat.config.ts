@@ -26,7 +26,7 @@ function typechainTarget() {
 }
 
 function forceTypechain() {
-  return process.env.PRIVATE_KEY === undefined || process.env.TYPECHAIN_FORCE === "true";
+  return process.env.TYPECHAIN_FORCE === undefined || process.env.TYPECHAIN_FORCE === "true";
 }
 
 const config: HardhatUserConfig = {
