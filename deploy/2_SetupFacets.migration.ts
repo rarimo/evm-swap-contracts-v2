@@ -1,8 +1,8 @@
 import { Deployer, Logger } from "@dlsl/hardhat-migrate";
 import { artifacts } from "hardhat";
-import { DEX_TYPE, DexType } from "./config/env-utils";
 import { SelectorType } from "../test/utils/contants";
 import { getBuilder } from "../test/utils/builder";
+import config from "./config/config.json";
 
 const SwapDiamond = artifacts.require("SwapDiamond");
 const MasterRouter = artifacts.require("MasterRouter");
@@ -15,8 +15,6 @@ const UniswapV3Router = artifacts.require("UniswapV3Router");
 const TraderJoeRouter = artifacts.require("TraderJoeRouter");
 
 export = async (deployer: Deployer, logger: Logger) => {
-  const dexType = DEX_TYPE();
-
   const builder = await getBuilder();
 
   const diamond = await SwapDiamond.deployed();
@@ -49,71 +47,79 @@ export = async (deployer: Deployer, logger: Logger) => {
     ]
   );
 
-  await addFacet(
-    "BridgeRouter",
-    (
-      await BridgeRouter.deployed()
-    ).address,
-    [
-      builder("setBridgeAddress").selector,
-      builder("bridgeERC20").selector,
-      builder("bridgeERC721").selector,
-      builder("bridgeERC1155").selector,
-      builder("bridgeNative").selector,
-    ],
-    [
-      SelectorType.SwapDiamond,
-      SelectorType.MasterRouter,
-      SelectorType.MasterRouter,
-      SelectorType.MasterRouter,
-      SelectorType.MasterRouter,
-    ]
-  );
+  if (config.facets.bridge) {
+    await addFacet(
+      "BridgeRouter",
+      (
+        await BridgeRouter.deployed()
+      ).address,
+      [
+        builder("setBridgeAddress").selector,
+        builder("bridgeERC20").selector,
+        builder("bridgeERC721").selector,
+        builder("bridgeERC1155").selector,
+        builder("bridgeNative").selector,
+      ],
+      [
+        SelectorType.SwapDiamond,
+        SelectorType.MasterRouter,
+        SelectorType.MasterRouter,
+        SelectorType.MasterRouter,
+        SelectorType.MasterRouter,
+      ]
+    );
+  }
 
-  await addFacet(
-    "MulticallRouter",
-    (
-      await MulticallRouter.deployed()
-    ).address,
-    [builder("multicall").selector],
-    [SelectorType.MasterRouter]
-  );
+  if (config.facets.multicall) {
+    await addFacet(
+      "MulticallRouter",
+      (
+        await MulticallRouter.deployed()
+      ).address,
+      [builder("multicall").selector],
+      [SelectorType.MasterRouter]
+    );
+  }
 
-  await addFacet(
-    "TransferRouter",
-    (
-      await TransferRouter.deployed()
-    ).address,
-    [
-      builder("transferERC20").selector,
-      builder("transferERC721").selector,
-      builder("transferERC1155").selector,
-      builder("transferNative").selector,
-      builder("transferFromERC20").selector,
-      builder("transferFromERC721").selector,
-      builder("transferFromERC1155").selector,
-    ],
-    [
-      SelectorType.MasterRouter,
-      SelectorType.MasterRouter,
-      SelectorType.MasterRouter,
-      SelectorType.MasterRouter,
-      SelectorType.MasterRouter,
-      SelectorType.MasterRouter,
-      SelectorType.MasterRouter,
-    ]
-  );
+  if (config.facets.transfer) {
+    await addFacet(
+      "TransferRouter",
+      (
+        await TransferRouter.deployed()
+      ).address,
+      [
+        builder("transferERC20").selector,
+        builder("transferERC721").selector,
+        builder("transferERC1155").selector,
+        builder("transferNative").selector,
+        builder("transferFromERC20").selector,
+        builder("transferFromERC721").selector,
+        builder("transferFromERC1155").selector,
+      ],
+      [
+        SelectorType.MasterRouter,
+        SelectorType.MasterRouter,
+        SelectorType.MasterRouter,
+        SelectorType.MasterRouter,
+        SelectorType.MasterRouter,
+        SelectorType.MasterRouter,
+        SelectorType.MasterRouter,
+      ]
+    );
+  }
 
-  await addFacet(
-    "WrapRouter",
-    (
-      await WrapRouter.deployed()
-    ).address,
-    [builder("setWrappedNativeAddress").selector, builder("wrap").selector, builder("unwrap").selector],
-    [SelectorType.SwapDiamond, SelectorType.MasterRouter, SelectorType.MasterRouter]
-  );
+  if (config.facets.wrap) {
+    await addFacet(
+      "WrapRouter",
+      (
+        await WrapRouter.deployed()
+      ).address,
+      [builder("setWrappedNativeAddress").selector, builder("wrap").selector, builder("unwrap").selector],
+      [SelectorType.SwapDiamond, SelectorType.MasterRouter, SelectorType.MasterRouter]
+    );
+  }
 
-  if (dexType == DexType.Uniswap) {
+  if (config.facets.uniswapV2) {
     await addFacet(
       "UniswapV2Router",
       (
@@ -138,7 +144,9 @@ export = async (deployer: Deployer, logger: Logger) => {
         SelectorType.MasterRouter,
       ]
     );
+  }
 
+  if (config.facets.uniswapV3) {
     await addFacet(
       "UniswapV3Router",
       (
@@ -147,7 +155,9 @@ export = async (deployer: Deployer, logger: Logger) => {
       [builder("setUniswapV3RouterAddress").selector, builder("exactInput").selector, builder("exactOutput").selector],
       [SelectorType.SwapDiamond, SelectorType.MasterRouter, SelectorType.MasterRouter]
     );
-  } else {
+  }
+
+  if (config.facets.traderJoe) {
     await addFacet(
       "TraderJoeRouter",
       (
