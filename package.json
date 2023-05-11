@@ -14,6 +14,7 @@
     "private-network-fork": "npx hardhat node --fork https://mainnet.infura.io/v3/$(grep INFURA_KEY .env | cut -d '\"' -f2)",
     "deploy-localhost": "npx hardhat migrate --network localhost",
     "deploy-goerli": "npx hardhat migrate --network goerli --verify --confirmations 4",
+    "deploy-fuji": "npx hardhat migrate --network avalanche_fuji_testnet --verify --confirmations 5",
     "deploy-chapel": "npx hardhat migrate --network chapel --verify --confirmations 1",
     "deploy-ethereum": "npx hardhat migrate --network ethereum --verify --confirmations 4",
     "deploy-bsc": "npx hardhat migrate --network bsc --verify --confirmations 2",

@@ -44,6 +44,11 @@ const config: HardhatUserConfig = {
       accounts: privateKey(),
       gasMultiplier: 1.2,
     },
+    avalanche_fuji_testnet: {
+      url: `https://avalanche-fuji.infura.io/v3/${process.env.INFURA_KEY}`,
+      accounts: privateKey(),
+      gasMultiplier: 1.2,
+    },
     chapel: {
       url: "https://data-seed-prebsc-1-s1.binance.org:8545",
       accounts: privateKey(),
@@ -74,6 +79,7 @@ const config: HardhatUserConfig = {
     apiKey: {
       mainnet: `${process.env.ETHERSCAN_KEY}`,
       goerli: `${process.env.ETHERSCAN_KEY}`,
+      avalancheFujiTestnet: `${process.env.AVALANCHE_KEY}`,
       bsc: `${process.env.BSCSCAN_KEY}`,
       bscTestnet: `${process.env.BSCSCAN_KEY}`,
     },
