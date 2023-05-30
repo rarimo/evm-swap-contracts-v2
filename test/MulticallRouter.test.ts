@@ -63,6 +63,7 @@ describe("WrapRouter", () => {
         [
           builder("multicall", [
             [weth9.address, weth9.address, weth9.address, THIS_ADDRESS, RECEIVER.address, CALLER_ADDRESS],
+            [CONTRACT_BALANCE, 0, 0, wei("0.5"), wei("0.25"), CONTRACT_BALANCE],
             [
               weth9.interface.encodeFunctionData("deposit"),
               weth9.interface.encodeFunctionData("transfer", [RECEIVER.address, wei("0.5")]),
@@ -71,7 +72,6 @@ describe("WrapRouter", () => {
               "0x",
               "0x",
             ],
-            [CONTRACT_BALANCE, 0, 0, wei("0.5"), wei("0.25"), CONTRACT_BALANCE],
           ]).payload(),
         ],
         {
@@ -89,11 +89,11 @@ describe("WrapRouter", () => {
       ).to.be.revertedWith("MasterRouter: MulticallRouter: lengths mismatch");
 
       await expect(
-        masterProxy.connect(CALLER).make([builder("multicall", [[], ["0x"], []]).payload()])
+        masterProxy.connect(CALLER).make([builder("multicall", [[], [0], []]).payload()])
       ).to.be.revertedWith("MasterRouter: MulticallRouter: lengths mismatch");
 
       await expect(
-        masterProxy.connect(CALLER).make([builder("multicall", [[], [], [0]]).payload()])
+        masterProxy.connect(CALLER).make([builder("multicall", [[], [], ["0x"]]).payload()])
       ).to.be.revertedWith("MasterRouter: MulticallRouter: lengths mismatch");
     });
 
@@ -101,7 +101,7 @@ describe("WrapRouter", () => {
       await expect(
         masterProxy
           .connect(CALLER)
-          .make([builder("multicall", [[multicall.address], ["0x"], [wei("1")]]).payload()], { value: wei("1") })
+          .make([builder("multicall", [[multicall.address], [wei("1")], ["0x"]]).payload()], { value: wei("1") })
       ).to.be.revertedWith("MasterRouter: MulticallRouter: ErrorHelper: command reverted silently");
     });
   });
