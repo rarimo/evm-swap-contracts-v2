@@ -72,7 +72,7 @@ describe("MasterRouter", () => {
     it("should revert if reentrancy", async () => {
       const tx = masterProxy
         .connect(CALLER)
-        .make([builder("multicall", [[diamond.address], [builder("make", [[]]).functionData], [0]]).payload()]);
+        .make([builder("multicall", [[diamond.address], [0], [builder("make", [[]]).functionData]]).payload()]);
 
       await expect(tx).to.be.revertedWith("MasterRouter: MulticallRouter: MasterRouterStorage: new caller");
     });
@@ -80,7 +80,7 @@ describe("MasterRouter", () => {
     it("should not revert if skipRevert flag", async () => {
       const tx = masterProxy
         .connect(CALLER)
-        .make([builder("multicall", [[diamond.address], [builder("make", [[]]).functionData], [0]]).payload(true)]);
+        .make([builder("multicall", [[diamond.address], [0], [builder("make", [[]]).functionData]]).payload(true)]);
 
       await expect(tx).not.to.be.reverted;
     });

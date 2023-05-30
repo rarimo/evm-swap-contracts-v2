@@ -10,11 +10,11 @@ contract MulticallRouter {
 
     function multicall(
         address[] calldata targets_,
-        bytes[] calldata data_,
-        uint256[] calldata values_
+        uint256[] calldata values_,
+        bytes[] calldata data_
     ) external payable {
         require(
-            targets_.length == data_.length && data_.length == values_.length,
+            targets_.length == values_.length && values_.length == data_.length,
             "MulticallRouter: lengths mismatch"
         );
 
