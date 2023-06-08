@@ -1,0 +1,23 @@
+{
+  "accounts": {
+    "OWNER": "0x1BBcc1c328E47805f050CB8C4BEE9a6043997118"
+  },
+
+  "integrations": {
+    "evmBridge": "0xF663a9EaC9CB9Fa3eC6f1d8a4E5716a41A1752b6",
+    "wrappedNative": "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+    "uniswapV2Router": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
+    "uniswapV3Router": "0x0000000000000000000000000000000000000000",
+    "traderJoeRouter": "0x0000000000000000000000000000000000000000"
+  },
+
+  "facets": {
+    "bridge": true,
+    "multicall": true,
+    "transfer": true,
+    "wrap": true,
+    "uniswapV2": true,
+    "uniswapV3": false,
+    "traderJoe": false
+  }
+}

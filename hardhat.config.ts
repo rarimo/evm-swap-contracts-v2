@@ -44,13 +44,31 @@ const config: HardhatUserConfig = {
       accounts: privateKey(),
       gasMultiplier: 1.2,
     },
-    avalanche_fuji_testnet: {
+    mumbai: {
+      url: "https://rpc-mumbai.maticvigil.com/",
+      accounts: privateKey(),
+      gasMultiplier: 1.2,
+      timeout: 60000,
+    },
+    fuji: {
       url: `https://avalanche-fuji.infura.io/v3/${process.env.INFURA_KEY}`,
       accounts: privateKey(),
       gasMultiplier: 1.2,
     },
     chapel: {
       url: "https://data-seed-prebsc-1-s1.binance.org:8545",
+      accounts: privateKey(),
+      gasMultiplier: 1.2,
+      timeout: 60000,
+    },
+    polygon: {
+      url: `https://polygon-rpc.com`,
+      accounts: privateKey(),
+      gasMultiplier: 3,
+      timeout: 6000000,
+    },
+    avalanche: {
+      url: `https://api.avax.network/ext/bc/C/rpc`,
       accounts: privateKey(),
       gasMultiplier: 1.2,
       timeout: 60000,
@@ -80,8 +98,11 @@ const config: HardhatUserConfig = {
       mainnet: `${process.env.ETHERSCAN_KEY}`,
       goerli: `${process.env.ETHERSCAN_KEY}`,
       avalancheFujiTestnet: `${process.env.AVALANCHE_KEY}`,
+      avalanche: `${process.env.AVALANCHE_KEY}`,
       bsc: `${process.env.BSCSCAN_KEY}`,
       bscTestnet: `${process.env.BSCSCAN_KEY}`,
+      polygonMumbai: `${process.env.POLYGON_KEY}`,
+      polygon: `${process.env.POLYGON_KEY}`,
     },
   },
   migrate: {
