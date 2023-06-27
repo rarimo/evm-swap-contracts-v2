@@ -4,9 +4,9 @@
   },
 
   "integrations": {
-    "evmBridge": "0x86A900caD150531B5D940Cb370CD162345A4bda8",
+    "evmBridge": "0x32c3053Ffc65745482Fea4554d2e817aD0125a5d",
     "wrappedNative": "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd",
-    "uniswapV2Router": "0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3",
+    "uniswapV2Router": "0xd99d1c33f9fc3444f8101754abc46c52416550d1",
     "uniswapV3Router": "0x0000000000000000000000000000000000000000",
     "traderJoeRouter": "0x0000000000000000000000000000000000000000"
   },
