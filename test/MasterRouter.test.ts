@@ -1,17 +1,17 @@
 import { expect } from "chai";
-import { Reverter } from "./helpers/reverter";
-import { Builder, getBuilder } from "./utils/builder";
+import { Reverter } from "@/test/helpers/reverter";
+import { Builder, getBuilder } from "@/test/utils/builder";
 import {
   SwapDiamond,
   MasterRouter,
   ERC721MintableBurnable,
   ERC1155MintableBurnable,
   MulticallRouter,
-} from "../generated-types/ethers";
+} from "@ethers-v5";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { ethers } from "hardhat";
-import { SelectorType } from "./utils/contants";
-import { ZERO_ADDR } from "../scripts/utils/constants";
+import { SelectorType } from "@/test/utils/contants";
+import { ZERO_ADDR } from "@/scripts/utils/constants";
 
 describe("MasterRouter", () => {
   const reverter = new Reverter();

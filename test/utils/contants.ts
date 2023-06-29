@@ -4,6 +4,8 @@ export const CONTRACT_BALANCE = BigNumber.from(2).pow(255);
 
 export const THIS_ADDRESS = "0x0000000000000000000000000000000000000001";
 export const CALLER_ADDRESS = "0x0000000000000000000000000000000000000002";
+export const ETHEREUM_ADDRESS = "0x0000000000000000000000000000000000000000";
+export const COMMISSION_ADDRESS = "0xFFfFfFffFFfffFFfFFfFFFFFffFFFffffFfFFFfF";
 
 export enum SelectorType {
   Undefined,
@@ -41,4 +43,12 @@ export enum Commands {
   SWAP_TOKENS_FOR_EXACT_AVAX = 73,
   SWAP_EXACT_TOKENS_FOR_AVAX = 74,
   SWAP_AVAX_FOR_EXACT_TOKENS = 75,
+}
+
+export enum FacadeMethodId {
+  AddFeeToken,
+  RemoveFeeToken,
+  UpdateFeeToken,
+  WithdrawFeeToken,
+  AuthorizeUpgrade,
 }

@@ -1,6 +1,6 @@
 import { expect } from "chai";
-import { Reverter } from "./helpers/reverter";
-import { Builder, getBuilder } from "./utils/builder";
+import { Reverter } from "@/test/helpers/reverter";
+import { Builder, getBuilder } from "@/test/utils/builder";
 import {
   SwapDiamond,
   MasterRouter,
@@ -9,11 +9,11 @@ import {
   WrappedNativeMock,
   UniswapV3RouterMock,
   UniswapV3Router,
-} from "../generated-types/ethers";
+} from "@ethers-v5";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { ethers } from "hardhat";
-import { CALLER_ADDRESS, SelectorType, THIS_ADDRESS } from "./utils/contants";
-import { wei, weiBTC, weiUSDT } from "../scripts/utils/utils";
+import { CALLER_ADDRESS, SelectorType, THIS_ADDRESS } from "@/test/utils/contants";
+import { wei, weiBTC, weiUSDT } from "@/scripts/utils/utils";
 import { setBalance } from "@nomicfoundation/hardhat-network-helpers";
 
 describe("UniswapV3Router", () => {

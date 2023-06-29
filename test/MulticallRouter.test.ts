@@ -1,11 +1,11 @@
 import { expect } from "chai";
-import { Reverter } from "./helpers/reverter";
-import { Builder, getBuilder } from "./utils/builder";
-import { MasterRouter, MulticallRouter, SwapDiamond, WrappedNativeMock, WrapRouter } from "../generated-types/ethers";
+import { Reverter } from "@/test/helpers/reverter";
+import { Builder, getBuilder } from "@/test/utils/builder";
+import { MasterRouter, MulticallRouter, SwapDiamond, WrappedNativeMock, WrapRouter } from "@ethers-v5";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { ethers } from "hardhat";
-import { CALLER_ADDRESS, CONTRACT_BALANCE, SelectorType, THIS_ADDRESS } from "./utils/contants";
-import { wei } from "../scripts/utils/utils";
+import { CALLER_ADDRESS, CONTRACT_BALANCE, SelectorType, THIS_ADDRESS } from "@/test/utils/contants";
+import { wei } from "@/scripts/utils/utils";
 
 describe("WrapRouter", () => {
   const reverter = new Reverter();

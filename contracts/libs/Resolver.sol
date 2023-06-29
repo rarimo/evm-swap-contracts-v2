@@ -28,9 +28,35 @@ library Resolver {
         return amount_;
     }
 
+    function resolve(uint256 amount_, uint256 commission_) internal view returns (uint256) {
+        if (amount_ == Constants.CONTRACT_BALANCE) {
+            require(address(this).balance >= commission_, "Resolver: commission exceeds balance");
+
+            return address(this).balance - commission_;
+        }
+
+        return amount_;
+    }
+
     function resolve(uint256 amount_, IERC20 erc20_) internal view returns (uint256) {
         if (amount_ == Constants.CONTRACT_BALANCE) {
             return erc20_.balanceOf(address(this));
+        }
+
+        return amount_;
+    }
+
+    function resolve(
+        uint256 amount_,
+        IERC20 erc20_,
+        uint256 commission_
+    ) internal view returns (uint256) {
+        if (amount_ == Constants.CONTRACT_BALANCE) {
+            uint256 erc20Balance_ = erc20_.balanceOf(address(this));
+
+            require(erc20Balance_ >= commission_, "Resolver: commission exceeds balance");
+
+            return erc20Balance_ - commission_;
         }
 
         return amount_;

@@ -1,6 +1,6 @@
 import { Deployer, Logger } from "@dlsl/hardhat-migrate";
 import { artifacts } from "hardhat";
-import config from "./config/config.json";
+import config from "@/deploy/config/config.json";
 
 const SwapDiamond = artifacts.require("SwapDiamond");
 const BridgeRouter = artifacts.require("BridgeRouter");
@@ -14,7 +14,7 @@ export = async (deployer: Deployer, logger: Logger) => {
 
   if (config.facets.bridge) {
     logger.logTransaction(
-      await (await BridgeRouter.at(diamondAddress)).setBridgeAddress(config.integrations.evmBridge),
+      await (await BridgeRouter.at(diamondAddress)).setBridgeAddress(config.integrations.bridgeFacade),
       "Set bridge address"
     );
   }
