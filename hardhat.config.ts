@@ -1,14 +1,15 @@
 import "@nomiclabs/hardhat-web3";
 import "@nomiclabs/hardhat-truffle5";
 import "@nomiclabs/hardhat-ethers";
-import "@nomicfoundation/hardhat-chai-matchers";
 import "@typechain/hardhat";
+import "@nomicfoundation/hardhat-chai-matchers";
 import "@dlsl/hardhat-migrate";
 import "@dlsl/hardhat-gobind";
 import "@dlsl/hardhat-markup";
 import "hardhat-contract-sizer";
 import "hardhat-gas-reporter";
 import "solidity-coverage";
+import "tsconfig-paths/register";
 
 import { HardhatUserConfig } from "hardhat/config";
 
@@ -26,7 +27,7 @@ function typechainTarget() {
 }
 
 function forceTypechain() {
-  return process.env.TYPECHAIN_FORCE === undefined || process.env.TYPECHAIN_FORCE === "true";
+  return process.env.TYPECHAIN_FORCE !== "false";
 }
 
 const config: HardhatUserConfig = {
@@ -44,14 +45,8 @@ const config: HardhatUserConfig = {
       accounts: privateKey(),
       gasMultiplier: 1.2,
     },
-    mumbai: {
-      url: "https://rpc-mumbai.maticvigil.com/",
-      accounts: privateKey(),
-      gasMultiplier: 1.2,
-      timeout: 60000,
-    },
-    fuji: {
-      url: `https://avalanche-fuji.infura.io/v3/${process.env.INFURA_KEY}`,
+    sepolia: {
+      url: `https://sepolia.infura.io/v3/${process.env.INFURA_KEY}`,
       accounts: privateKey(),
       gasMultiplier: 1.2,
     },
@@ -61,14 +56,14 @@ const config: HardhatUserConfig = {
       gasMultiplier: 1.2,
       timeout: 60000,
     },
-    polygon: {
-      url: `https://polygon-rpc.com`,
+    mumbai: {
+      url: "https://rpc-mumbai.maticvigil.com/",
       accounts: privateKey(),
-      gasMultiplier: 3,
-      timeout: 6000000,
+      gasMultiplier: 1.2,
+      timeout: 60000,
     },
-    avalanche: {
-      url: `https://api.avax.network/ext/bc/C/rpc`,
+    fuji: {
+      url: "https://api.avax-test.network/ext/bc/C/rpc",
       accounts: privateKey(),
       gasMultiplier: 1.2,
       timeout: 60000,
@@ -83,6 +78,18 @@ const config: HardhatUserConfig = {
       accounts: privateKey(),
       gasMultiplier: 1.2,
     },
+    polygon: {
+      url: `https://polygon-rpc.com`,
+      accounts: privateKey(),
+      gasMultiplier: 3,
+      timeout: 6000000,
+    },
+    avalanche: {
+      url: `https://api.avax.network/ext/bc/C/rpc`,
+      accounts: privateKey(),
+      gasMultiplier: 1.2,
+      timeout: 60000,
+    },
   },
   solidity: {
     version: "0.8.9",
@@ -95,14 +102,15 @@ const config: HardhatUserConfig = {
   },
   etherscan: {
     apiKey: {
-      mainnet: `${process.env.ETHERSCAN_KEY}`,
       goerli: `${process.env.ETHERSCAN_KEY}`,
+      sepolia: `${process.env.ETHERSCAN_KEY}`,
+      mainnet: `${process.env.ETHERSCAN_KEY}`,
+      bscTestnet: `${process.env.BSCSCAN_KEY}`,
+      bsc: `${process.env.BSCSCAN_KEY}`,
+      polygonMumbai: `${process.env.POLYGONSCAN_KEY}`,
+      polygon: `${process.env.POLYGONSCAN_KEY}`,
       avalancheFujiTestnet: `${process.env.AVALANCHE_KEY}`,
       avalanche: `${process.env.AVALANCHE_KEY}`,
-      bsc: `${process.env.BSCSCAN_KEY}`,
-      bscTestnet: `${process.env.BSCSCAN_KEY}`,
-      polygonMumbai: `${process.env.POLYGON_KEY}`,
-      polygon: `${process.env.POLYGON_KEY}`,
     },
   },
   migrate: {

@@ -1,10 +1,10 @@
 import { expect } from "chai";
-import { Reverter } from "./helpers/reverter";
-import { Builder, getBuilder } from "./utils/builder";
-import { SwapDiamond, MasterRouter, MulticallRouter } from "../generated-types/ethers";
+import { Reverter } from "@/test/helpers/reverter";
+import { Builder, getBuilder } from "@/test/utils/builder";
+import { SwapDiamond, MasterRouter, MulticallRouter } from "@ethers-v5";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { ethers } from "hardhat";
-import { SelectorType } from "./utils/contants";
+import { SelectorType } from "@/test/utils/contants";
 
 describe("SwapDiamond", () => {
   const reverter = new Reverter();

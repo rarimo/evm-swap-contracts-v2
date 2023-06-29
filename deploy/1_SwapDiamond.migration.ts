@@ -1,6 +1,6 @@
 import { Deployer, Logger } from "@dlsl/hardhat-migrate";
 import { artifacts } from "hardhat";
-import config from "./config/config.json";
+import config from "@/deploy/config/config.json";
 
 const SwapDiamond = artifacts.require("SwapDiamond");
 const MasterRouter = artifacts.require("MasterRouter");

@@ -1,10 +1,10 @@
 {
   "accounts": {
-    "OWNER": "0xDa323B2e898745B756768F0e4890599d0Ce5aFA6"
+    "owner": "0xDa323B2e898745B756768F0e4890599d0Ce5aFA6"
   },
 
   "integrations": {
-    "evmBridge": "0x32c3053Ffc65745482Fea4554d2e817aD0125a5d",
+    "bridgeFacade": "0x0000000000000000000000000000000000000001",
     "wrappedNative": "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd",
     "uniswapV2Router": "0xd99d1c33f9fc3444f8101754abc46c52416550d1",
     "uniswapV3Router": "0x0000000000000000000000000000000000000000",

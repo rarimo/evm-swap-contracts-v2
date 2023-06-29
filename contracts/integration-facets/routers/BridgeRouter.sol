@@ -5,8 +5,9 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 import "@dlsl/dev-modules/diamond/presets/OwnableDiamond/OwnableDiamondStorage.sol";
 
-import "@rarimo/evm-bridge/interfaces/bridge/IBridge.sol";
+import "@rarimo/evm-bridge/interfaces/facade/IBridgeFacade.sol";
 import "@rarimo/evm-bridge/interfaces/bundle/IBundler.sol";
+import {Constants as BridgeConstants} from "@rarimo/evm-bridge/libs/Constants.sol";
 
 import "../../libs/Approver.sol";
 import "../../libs/Constants.sol";
@@ -24,73 +25,77 @@ contract BridgeRouter is OwnableDiamondStorage, MasterRouterStorage, BridgeRoute
     }
 
     function bridgeERC20(
-        address token_,
-        uint256 amount_,
-        IBundler.Bundle calldata bundle_,
-        string calldata network_,
-        string calldata receiver_,
-        bool isWrapped_
+        IBridgeFacade.DepositFeeERC20Parameters calldata feeParams_,
+        IBridge.DepositERC20Parameters memory depositParams_
     ) external payable {
         address bridge_ = getBridgeAddress();
+        (uint256 nativeFee_, uint256 erc20Fee_) = _approveFee(bridge_, feeParams_.feeToken);
 
-        IERC20(token_).approveMax(bridge_);
-        IBridge(bridge_).depositERC20(
-            token_,
-            amount_.resolve(IERC20(token_)),
-            bundle_,
-            network_,
-            receiver_,
-            isWrapped_
+        depositParams_.amount = depositParams_.amount.resolve(
+            IERC20(depositParams_.token),
+            feeParams_.feeToken == depositParams_.token ? erc20Fee_ : 0
         );
+
+        IERC20(depositParams_.token).approveMax(bridge_);
+
+        IBridgeFacade(bridge_).depositERC20{value: nativeFee_}(feeParams_, depositParams_);
     }
 
     function bridgeERC721(
-        address token_,
-        uint256 tokenId_,
-        IBundler.Bundle calldata bundle_,
-        string calldata network_,
-        string calldata receiver_,
-        bool isWrapped_
+        IBridgeFacade.DepositFeeERC721Parameters calldata feeParams_,
+        IBridge.DepositERC721Parameters calldata depositParams_
     ) external payable {
         address bridge_ = getBridgeAddress();
+        (uint256 nativeFee_, ) = _approveFee(bridge_, feeParams_.feeToken);
 
-        IERC721(token_).approveMax(bridge_);
-        IBridge(bridge_).depositERC721(token_, tokenId_, bundle_, network_, receiver_, isWrapped_);
+        IERC721(depositParams_.token).approveMax(bridge_);
+
+        IBridgeFacade(bridge_).depositERC721{value: nativeFee_}(feeParams_, depositParams_);
     }
 
     function bridgeERC1155(
-        address token_,
-        uint256 tokenId_,
-        uint256 amount_,
-        IBundler.Bundle calldata bundle_,
-        string calldata network_,
-        string calldata receiver_,
-        bool isWrapped_
+        IBridgeFacade.DepositFeeERC1155Parameters calldata feeParams_,
+        IBridge.DepositERC1155Parameters memory depositParams_
     ) external payable {
         address bridge_ = getBridgeAddress();
+        (uint256 nativeFee_, ) = _approveFee(bridge_, feeParams_.feeToken);
 
-        IERC1155(token_).approveMax(bridge_);
-        IBridge(bridge_).depositERC1155(
-            token_,
-            tokenId_,
-            amount_.resolve(IERC1155(token_), tokenId_),
-            bundle_,
-            network_,
-            receiver_,
-            isWrapped_
+        depositParams_.amount = depositParams_.amount.resolve(
+            IERC1155(depositParams_.token),
+            depositParams_.tokenId
         );
+
+        IERC1155(depositParams_.token).approveMax(bridge_);
+
+        IBridgeFacade(bridge_).depositERC1155{value: nativeFee_}(feeParams_, depositParams_);
     }
 
     function bridgeNative(
-        uint256 amount_,
-        IBundler.Bundle calldata bundle_,
-        string calldata network_,
-        string calldata receiver_
+        IBridgeFacade.DepositFeeNativeParameters calldata feeParams_,
+        IBridge.DepositNativeParameters memory depositParams_
     ) external payable {
-        IBridge(getBridgeAddress()).depositNative{value: amount_.resolve()}(
-            bundle_,
-            network_,
-            receiver_
+        address bridge_ = getBridgeAddress();
+
+        (uint256 nativeFee_, ) = _approveFee(bridge_, feeParams_.feeToken);
+
+        depositParams_.amount = depositParams_.amount.resolve(nativeFee_);
+
+        IBridgeFacade(bridge_).depositNative{value: depositParams_.amount + nativeFee_}(
+            feeParams_,
+            depositParams_
         );
+    }
+
+    function _approveFee(
+        address bridge_,
+        address feeToken_
+    ) private returns (uint256 nativeFee_, uint256 erc20Fee_) {
+        if (feeToken_ == BridgeConstants.ETHEREUM_ADDRESS) {
+            nativeFee_ = IFeeManager(bridge_).getCommission(feeToken_);
+        } else if (feeToken_ != BridgeConstants.COMMISSION_ADDRESS) {
+            erc20Fee_ = IFeeManager(bridge_).getCommission(feeToken_);
+
+            IERC20(feeToken_).approveMax(bridge_);
+        }
     }
 }

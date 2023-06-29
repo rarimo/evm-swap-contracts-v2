@@ -1,5 +1,5 @@
 import { ethers } from "hardhat";
-import { Commands } from "./contants";
+import { Commands } from "@/test/utils/contants";
 import {
   BridgeRouter,
   MasterRouter,
@@ -9,7 +9,7 @@ import {
   UniswapV2Router,
   UniswapV3Router,
   WrapRouter,
-} from "../../generated-types/ethers";
+} from "@ethers-v5";
 import { ContractFactory } from "ethers";
 
 type Selector = keyof (MasterRouter["functions"] &

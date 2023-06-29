@@ -1,8 +1,8 @@
 import { Deployer, Logger } from "@dlsl/hardhat-migrate";
 import { artifacts } from "hardhat";
-import { SelectorType } from "../test/utils/contants";
-import { getBuilder } from "../test/utils/builder";
-import config from "./config/config.json";
+import { SelectorType } from "@/test/utils/contants";
+import { getBuilder } from "@/test/utils/builder";
+import config from "@/deploy/config/config.json";
 
 const SwapDiamond = artifacts.require("SwapDiamond");
 const MasterRouter = artifacts.require("MasterRouter");
