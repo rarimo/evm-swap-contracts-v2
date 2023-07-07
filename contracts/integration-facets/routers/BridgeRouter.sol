@@ -12,10 +12,9 @@ import {Constants as BridgeConstants} from "@rarimo/evm-bridge/libs/Constants.so
 import "../../libs/Approver.sol";
 import "../../libs/Constants.sol";
 import "../../libs/Resolver.sol";
-import "../../master-facet/MasterRouterStorage.sol";
 import "../storages/BridgeRouterStorage.sol";
 
-contract BridgeRouter is OwnableDiamondStorage, MasterRouterStorage, BridgeRouterStorage {
+contract BridgeRouter is OwnableDiamondStorage, BridgeRouterStorage {
     using Approver for *;
     using Resolver for uint256;
     using SafeERC20 for IERC20;

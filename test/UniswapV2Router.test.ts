@@ -225,7 +225,7 @@ describe("UniswapV2Router", () => {
       await expect(tx).changeTokenBalance(tokens.BTC, RECEIVER, weiBTC("1"));
     });
 
-    it("should swap tokens for exact tokens with refund (arbitrary receiver)", async () => {
+    it("should swap tokens for exact tokens with rest (arbitrary receiver)", async () => {
       const tx = masterProxy
         .connect(CALLER)
         .make([
@@ -238,7 +238,7 @@ describe("UniswapV2Router", () => {
           ]).payload(),
         ]);
 
-      await expect(tx).changeTokenBalance(tokens.USDT, CALLER, -weiUSDT("34000"));
+      await expect(tx).changeTokenBalances(tokens.USDT, [CALLER, diamond], [-weiUSDT("40000"), weiUSDT("6000")]);
       await expect(tx).changeTokenBalance(tokens.BTC, RECEIVER, weiBTC("1"));
     });
 
@@ -375,7 +375,7 @@ describe("UniswapV2Router", () => {
       await expect(tx).changeEtherBalance(RECEIVER, wei("1"));
     });
 
-    it("should swap tokens for exact ETH with refund (arbitrary receiver)", async () => {
+    it("should swap tokens for exact ETH with rest (arbitrary receiver)", async () => {
       const tx = masterProxy
         .connect(CALLER)
         .make([
@@ -388,7 +388,7 @@ describe("UniswapV2Router", () => {
           ]).payload(),
         ]);
 
-      await expect(tx).changeTokenBalance(tokens.USDT, CALLER, -weiUSDT("1700"));
+      await expect(tx).changeTokenBalances(tokens.USDT, [CALLER, diamond], [-weiUSDT("2000"), weiUSDT("300")]);
       await expect(tx).changeEtherBalance(RECEIVER, wei("1"));
     });
 
@@ -521,7 +521,7 @@ describe("UniswapV2Router", () => {
       await expect(tx).changeTokenBalance(tokens.USDT, RECEIVER, weiUSDT("1700"));
     });
 
-    it("should swap ETH for exact tokens with refund (arbitrary receiver)", async () => {
+    it("should swap ETH for exact tokens with rest (arbitrary receiver)", async () => {
       const tx = masterProxy
         .connect(CALLER)
         .make(
@@ -536,7 +536,7 @@ describe("UniswapV2Router", () => {
           { value: wei("2") }
         );
 
-      await expect(tx).changeEtherBalance(CALLER, -wei("1"));
+      await expect(tx).changeEtherBalances([CALLER, diamond], [-wei("2"), wei("1")]);
       await expect(tx).changeTokenBalance(tokens.USDT, RECEIVER, weiUSDT("1700"));
     });
 

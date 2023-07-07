@@ -234,7 +234,7 @@ describe("UniswapV3Router", () => {
       await expect(tx).to.changeTokenBalance(tokens.WETH, RECEIVER, wei("40"));
     });
 
-    it("should swap tokens for exact tokens with token refund (arbitrary receiver)", async () => {
+    it("should swap tokens for exact tokens with token rest (arbitrary receiver)", async () => {
       const tx = masterProxy
         .connect(CALLER)
         .make([
@@ -248,7 +248,7 @@ describe("UniswapV3Router", () => {
           ]).payload(),
         ]);
 
-      await expect(tx).to.changeTokenBalance(tokens.BTC, CALLER, -weiBTC("2"));
+      await expect(tx).to.changeTokenBalances(tokens.BTC, [CALLER, diamond], [-weiBTC("3"), weiBTC("1")]);
       await expect(tx).to.changeTokenBalance(tokens.WETH, RECEIVER, wei("40"));
     });
 
@@ -272,7 +272,7 @@ describe("UniswapV3Router", () => {
       await expect(tx).to.changeTokenBalance(tokens.BTC, CALLER, weiBTC("2"));
     });
 
-    it("should swap eth for exact tokens with eth refund (THIS_ADDRESS receiver)", async () => {
+    it("should swap eth for exact tokens with eth rest (THIS_ADDRESS receiver)", async () => {
       const tx = masterProxy
         .connect(CALLER)
         .make(
@@ -288,7 +288,7 @@ describe("UniswapV3Router", () => {
           { value: wei("60") }
         );
 
-      await expect(tx).to.changeEtherBalance(CALLER, -wei("40"));
+      await expect(tx).to.changeEtherBalances([CALLER, diamond], [-wei("60"), wei("20")]);
       await expect(tx).to.changeTokenBalance(tokens.BTC, diamond, weiBTC("2"));
     });
   });

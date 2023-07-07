@@ -9,17 +9,9 @@ import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router01.sol";
 
 import "../../libs/Approver.sol";
 import "../../libs/Resolver.sol";
-import "../../libs/Constants.sol";
-import "../../master-facet/MasterRouterStorage.sol";
 import "../storages/UniswapV2RouterStorage.sol";
-import "./TransferRouter.sol";
 
-contract UniswapV2Router is
-    OwnableDiamondStorage,
-    MasterRouterStorage,
-    UniswapV2RouterStorage,
-    TransferRouter
-{
+contract UniswapV2Router is OwnableDiamondStorage, UniswapV2RouterStorage {
     using SafeERC20 for IERC20;
     using Approver for *;
     using Resolver for address;
@@ -56,21 +48,16 @@ contract UniswapV2Router is
     ) external payable {
         _validatePath(path_);
 
-        address tokenIn_ = path_[0];
         address swapV2router_ = getSwapV2Router();
 
-        IERC20(tokenIn_).approveMax(swapV2router_);
-        uint256 spentFundsAmount_ = IUniswapV2Router01(swapV2router_).swapTokensForExactTokens(
+        IERC20(path_[0]).approveMax(swapV2router_);
+        IUniswapV2Router01(swapV2router_).swapTokensForExactTokens(
             amountOut_,
             amountInMax_,
             path_,
             receiver_.resolve(),
             block.timestamp
-        )[0];
-
-        if (amountInMax_ > spentFundsAmount_) {
-            transferERC20(tokenIn_, Constants.CALLER_ADDRESS, amountInMax_ - spentFundsAmount_);
-        }
+        );
     }
 
     function swapExactETHForTokens(
@@ -97,21 +84,16 @@ contract UniswapV2Router is
     ) external payable {
         _validatePath(path_);
 
-        address tokenIn_ = path_[0];
         address swapV2router_ = getSwapV2Router();
 
-        IERC20(tokenIn_).approveMax(swapV2router_);
-        uint256 spentFundsAmount_ = IUniswapV2Router01(swapV2router_).swapTokensForExactETH(
+        IERC20(path_[0]).approveMax(swapV2router_);
+        IUniswapV2Router01(swapV2router_).swapTokensForExactETH(
             amountOut_,
             amountInMax_,
             path_,
             receiver_.resolve(),
             block.timestamp
-        )[0];
-
-        if (amountInMax_ > spentFundsAmount_) {
-            transferERC20(tokenIn_, Constants.CALLER_ADDRESS, amountInMax_ - spentFundsAmount_);
-        }
+        );
     }
 
     function swapExactTokensForETH(
@@ -142,13 +124,12 @@ contract UniswapV2Router is
     ) external payable {
         _validatePath(path_);
 
-        uint256 spentFundsAmount_ = IUniswapV2Router01(getSwapV2Router()).swapETHForExactTokens{
-            value: amountInMax_
-        }(amountOut_, path_, receiver_.resolve(), block.timestamp)[0];
-
-        if (amountInMax_ > spentFundsAmount_) {
-            transferNative(Constants.CALLER_ADDRESS, amountInMax_ - spentFundsAmount_);
-        }
+        IUniswapV2Router01(getSwapV2Router()).swapETHForExactTokens{value: amountInMax_}(
+            amountOut_,
+            path_,
+            receiver_.resolve(),
+            block.timestamp
+        );
     }
 
     function _validatePath(address[] calldata path_) internal pure {
