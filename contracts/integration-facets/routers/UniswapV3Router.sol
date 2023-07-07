@@ -11,17 +11,9 @@ import "@uniswap/v3-periphery/contracts/interfaces/IPeripheryPayments.sol";
 import "../../libs/BytesHelper.sol";
 import "../../libs/Approver.sol";
 import "../../libs/Resolver.sol";
-import "../../libs/Constants.sol";
-import "../../master-facet/MasterRouterStorage.sol";
 import "../storages/UniswapV3RouterStorage.sol";
-import "./TransferRouter.sol";
 
-contract UniswapV3Router is
-    OwnableDiamondStorage,
-    MasterRouterStorage,
-    UniswapV3RouterStorage,
-    TransferRouter
-{
+contract UniswapV3Router is OwnableDiamondStorage, UniswapV3RouterStorage {
     using SafeERC20 for IERC20;
     using BytesHelper for bytes;
     using Approver for *;
@@ -62,12 +54,10 @@ contract UniswapV3Router is
         uint256 amountInMaximum_,
         bytes calldata path_
     ) external payable {
-        address tokenIn_ = path_.getLastToken();
-
         address swapV3Router_ = getSwapV3Router();
 
         if (!isNative_) {
-            IERC20(tokenIn_).approveMax(swapV3Router_);
+            IERC20(path_.getLastToken()).approveMax(swapV3Router_);
         }
 
         uint256 spentFundsAmount_ = ISwapRouter(swapV3Router_).exactOutput{
@@ -82,18 +72,8 @@ contract UniswapV3Router is
             })
         );
 
-        if (amountInMaximum_ > spentFundsAmount_) {
-            if (isNative_) {
-                IPeripheryPayments(swapV3Router_).refundETH();
-
-                transferNative(Constants.CALLER_ADDRESS, amountInMaximum_ - spentFundsAmount_);
-            } else {
-                transferERC20(
-                    tokenIn_,
-                    Constants.CALLER_ADDRESS,
-                    amountInMaximum_ - spentFundsAmount_
-                );
-            }
+        if (isNative_ && amountInMaximum_ > spentFundsAmount_) {
+            IPeripheryPayments(swapV3Router_).refundETH();
         }
     }
 }

@@ -9,17 +9,9 @@ import "@traderjoe-xyz/core/contracts/traderjoe/interfaces/IJoeRouter01.sol";
 
 import "../../libs/Approver.sol";
 import "../../libs/Resolver.sol";
-import "../../libs/Constants.sol";
-import "../../master-facet/MasterRouterStorage.sol";
 import "../storages/TraderJoeRouterStorage.sol";
-import "./TransferRouter.sol";
 
-contract TraderJoeRouter is
-    OwnableDiamondStorage,
-    MasterRouterStorage,
-    TraderJoeRouterStorage,
-    TransferRouter
-{
+contract TraderJoeRouter is OwnableDiamondStorage, TraderJoeRouterStorage {
     using SafeERC20 for IERC20;
     using Approver for *;
     using Resolver for address;
@@ -56,21 +48,16 @@ contract TraderJoeRouter is
     ) external payable {
         _validatePath(path_);
 
-        address tokenIn_ = path_[0];
         address traderJoeRouter_ = getTraderJoeRouter();
 
-        IERC20(tokenIn_).approveMax(traderJoeRouter_);
-        uint256 spentFundsAmount_ = IJoeRouter01(traderJoeRouter_).swapTokensForExactTokens(
+        IERC20(path_[0]).approveMax(traderJoeRouter_);
+        IJoeRouter01(traderJoeRouter_).swapTokensForExactTokens(
             amountOut_,
             amountInMax_,
             path_,
             receiver_.resolve(),
             block.timestamp
-        )[0];
-
-        if (amountInMax_ > spentFundsAmount_) {
-            transferERC20(tokenIn_, Constants.CALLER_ADDRESS, amountInMax_ - spentFundsAmount_);
-        }
+        );
     }
 
     function swapExactAVAXForTokens(
@@ -97,21 +84,16 @@ contract TraderJoeRouter is
     ) external payable {
         _validatePath(path_);
 
-        address tokenIn_ = path_[0];
         address traderJoeRouter_ = getTraderJoeRouter();
 
-        IERC20(tokenIn_).approveMax(traderJoeRouter_);
-        uint256 spentFundsAmount_ = IJoeRouter01(traderJoeRouter_).swapTokensForExactAVAX(
+        IERC20(path_[0]).approveMax(traderJoeRouter_);
+        IJoeRouter01(traderJoeRouter_).swapTokensForExactAVAX(
             amountOut_,
             amountInMax_,
             path_,
             receiver_.resolve(),
             block.timestamp
-        )[0];
-
-        if (amountInMax_ > spentFundsAmount_) {
-            transferERC20(tokenIn_, Constants.CALLER_ADDRESS, amountInMax_ - spentFundsAmount_);
-        }
+        );
     }
 
     function swapExactTokensForAVAX(
@@ -142,13 +124,12 @@ contract TraderJoeRouter is
     ) external payable {
         _validatePath(path_);
 
-        uint256 spentFundsAmount_ = IJoeRouter01(getTraderJoeRouter()).swapAVAXForExactTokens{
-            value: amountInMax_
-        }(amountOut_, path_, receiver_.resolve(), block.timestamp)[0];
-
-        if (amountInMax_ > spentFundsAmount_) {
-            transferNative(Constants.CALLER_ADDRESS, amountInMax_ - spentFundsAmount_);
-        }
+        IJoeRouter01(getTraderJoeRouter()).swapAVAXForExactTokens{value: amountInMax_}(
+            amountOut_,
+            path_,
+            receiver_.resolve(),
+            block.timestamp
+        );
     }
 
     function _validatePath(address[] calldata path_) internal pure {
