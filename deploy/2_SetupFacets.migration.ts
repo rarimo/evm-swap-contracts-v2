@@ -1,4 +1,4 @@
-import { Deployer, Logger } from "@dlsl/hardhat-migrate";
+import { Deployer, Logger } from "@solarity/hardhat-migrate";
 import { artifacts } from "hardhat";
 import { SelectorType } from "@/test/utils/contants";
 import { getBuilder } from "@/test/utils/builder";

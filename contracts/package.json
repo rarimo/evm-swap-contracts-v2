@@ -1,0 +1,21 @@
+{
+  "name": "@rarimo/evm-swap-contracts-v2",
+  "version": "1.0.0",
+  "author": "Rarimo Foundation",
+  "keywords": [
+    "solidity",
+    "ethereum",
+    "smart-contracts"
+  ],
+  "files": [
+    "**/*.sol",
+    "!mock/**/*",
+    "!imports/**/*"
+  ],
+  "dependencies": {
+    "@openzeppelin/contracts": "4.6.0",
+    "@openzeppelin/contracts-upgradeable": "4.6.0",
+    "@solarity/solidity-lib": "2.5.7",
+    "@rarimo/evm-bridge-contracts": "1.0.0"
+  }
+}

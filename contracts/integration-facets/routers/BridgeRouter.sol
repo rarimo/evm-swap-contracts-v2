@@ -3,11 +3,11 @@ pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
-import "@dlsl/dev-modules/diamond/presets/OwnableDiamond/OwnableDiamondStorage.sol";
+import "@solarity/solidity-lib/diamond/presets/OwnableDiamond/OwnableDiamondStorage.sol";
 
-import "@rarimo/evm-bridge/interfaces/facade/IBridgeFacade.sol";
-import "@rarimo/evm-bridge/interfaces/bundle/IBundler.sol";
-import {Constants as BridgeConstants} from "@rarimo/evm-bridge/libs/Constants.sol";
+import "@rarimo/evm-bridge-contracts/interfaces/facade/IBridgeFacade.sol";
+import "@rarimo/evm-bridge-contracts/interfaces/bundle/IBundler.sol";
+import {Constants as BridgeConstants} from "@rarimo/evm-bridge-contracts/libs/Constants.sol";
 
 import "../../libs/Approver.sol";
 import "../../libs/Constants.sol";

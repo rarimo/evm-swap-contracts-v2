@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-import "@dlsl/dev-modules/diamond/presets/OwnableDiamond/OwnableDiamondStorage.sol";
+import "@solarity/solidity-lib/diamond/presets/OwnableDiamond/OwnableDiamondStorage.sol";
 
 import "../../libs/Resolver.sol";
 import "../../interfaces/tokens/IWrappedNative.sol";
