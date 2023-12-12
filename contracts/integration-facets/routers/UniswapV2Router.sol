@@ -1,15 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
-import "@solarity/solidity-lib/diamond/presets/OwnableDiamond/OwnableDiamondStorage.sol";
+import {OwnableDiamondStorage} from "@solarity/solidity-lib/diamond/presets/OwnableDiamond/OwnableDiamondStorage.sol";
 
-import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router01.sol";
+import {IUniswapV2Router01} from "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router01.sol";
 
-import "../../libs/Approver.sol";
-import "../../libs/Resolver.sol";
-import "../storages/UniswapV2RouterStorage.sol";
+import {Approver} from "../../libs/Approver.sol";
+import {Resolver} from "../../libs/Resolver.sol";
+import {UniswapV2RouterStorage} from "../storages/UniswapV2RouterStorage.sol";
 
 contract UniswapV2Router is OwnableDiamondStorage, UniswapV2RouterStorage {
     using SafeERC20 for IERC20;

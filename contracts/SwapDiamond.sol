@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-import "@solarity/solidity-lib/diamond/presets/OwnableDiamond/OwnableDiamond.sol";
+import {OwnableDiamond} from "@solarity/solidity-lib/diamond/presets/OwnableDiamond/OwnableDiamond.sol";
 
-import "./SwapDiamondStorage.sol";
+import {SwapDiamondStorage} from "./SwapDiamondStorage.sol";
 
 contract SwapDiamond is OwnableDiamond, SwapDiamondStorage {
     receive() external payable {}
