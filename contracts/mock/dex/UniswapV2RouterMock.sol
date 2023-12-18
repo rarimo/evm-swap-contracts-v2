@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-import "./AbstractSwapRouterMock.sol";
+import {AbstractSwapRouterMock} from "./AbstractSwapRouterMock.sol";
 
 contract UniswapV2RouterMock is AbstractSwapRouterMock {
     constructor(address weth9_) AbstractSwapRouterMock(weth9_) {}

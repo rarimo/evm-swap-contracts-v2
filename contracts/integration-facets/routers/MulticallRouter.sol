@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-import "../../libs/Resolver.sol";
-import "../../libs/ErrorHelper.sol";
+import {Resolver} from "../../libs/Resolver.sol";
+import {ErrorHelper} from "../../libs/ErrorHelper.sol";
 
 contract MulticallRouter {
     using Resolver for *;

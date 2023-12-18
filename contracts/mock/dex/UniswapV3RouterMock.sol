@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-import "@solarity/solidity-lib/libs/arrays/ArrayHelper.sol";
+import {ArrayHelper} from "@solarity/solidity-lib/libs/arrays/ArrayHelper.sol";
 
-import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
+import {ISwapRouter} from "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
 
-import "./AbstractSwapRouterMock.sol";
-import "../../libs/BytesHelper.sol";
+import {AbstractSwapRouterMock} from "./AbstractSwapRouterMock.sol";
+import {BytesHelper} from "../../libs/BytesHelper.sol";
 
 contract UniswapV3RouterMock is AbstractSwapRouterMock {
     using ArrayHelper for address[];
